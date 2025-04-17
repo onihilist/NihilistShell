@@ -1,4 +1,7 @@
-﻿## Troubleshooting
+
+ ![image](https://github.com/user-attachments/assets/6a22fa38-21db-4ae2-abd4-44d34239044e)
+
+ ## Troubleshooting
 
 If you have any problem with NihilistShell, you can exit like this :
 ```bash
