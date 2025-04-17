@@ -3,6 +3,7 @@
 public class ShellContext
 {
     public Dictionary<string, string> EnvVars { get; set; } = new();
+    public string CurrentDirectory { get; set; } = Directory.GetCurrentDirectory();
 
     public string ExpandVariables(string input)
     {

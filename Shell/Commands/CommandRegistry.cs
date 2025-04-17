@@ -8,8 +8,8 @@ public static class CommandRegistry
     {
         return new List<ICustomCommand>
         {
-            new Commands.TestCommand(),
-            new Commands.RealTestCommand()
+            new Commands.CdCommand(),
+            new Commands.NanoWrapper()
         };
     }
 }

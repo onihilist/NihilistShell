@@ -36,6 +36,12 @@ public class CommandParser
         if (_commands.TryGetValue(cmdName, out var command))
         {
             command.Execute(context, args);
+
+            if (command is IFallbackAfterExecute fallbackCommand && fallbackCommand.ShouldFallback)
+            {
+                ExecuteFallback(cmdName, args);
+            }
+
             return true;
         }
 
@@ -43,12 +49,15 @@ public class CommandParser
         return true;
     }
 
+
     private void ExecuteFallback(string cmdName, string[] args)
     {
         string line = $"{cmdName} {string.Join(" ", args)}";
 
         string shell = OperatingSystem.IsWindows() ? "wsl.exe" : "/bin/bash";
         string shellArgs = OperatingSystem.IsWindows() ? line : $"-c \"{line}\"";
+        var interactiveCommands = new HashSet<string> { "nano", "vim", "less", "top", "htop", "man" };
+        bool isInteractive = interactiveCommands.Contains(cmdName);
 
         var process = new System.Diagnostics.Process
         {
@@ -56,10 +65,10 @@ public class CommandParser
             {
                 FileName = shell,
                 Arguments = shellArgs,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                RedirectStandardInput = true,
-                UseShellExecute = false,
+                UseShellExecute = isInteractive,
+                RedirectStandardOutput = !isInteractive,
+                RedirectStandardError = !isInteractive,
+                RedirectStandardInput = !isInteractive,
                 CreateNoWindow = false
             }
         };

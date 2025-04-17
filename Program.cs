@@ -27,7 +27,7 @@ Console.WriteLine();
 
 while (true)
 {
-    AnsiConsole.Markup("[bold green][[nihilist-shell@core]][/] >> ");
+    AnsiConsole.Markup($"[bold green][[nihilist-shell@core]][/] [blue]{context.CurrentDirectory}[/] >> ");
     string? input = Console.ReadLine()?.Trim();
 
     if (string.IsNullOrWhiteSpace(input)) continue;
