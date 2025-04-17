@@ -1,76 +1,68 @@
 ﻿using Spectre.Console;
+using System.Reflection;
 
 namespace NeonShell.Shell;
 
 public class CommandParser
 {
-    private readonly Dictionary<string, Action<ShellContext, string[]>> _commands;
+    private readonly Dictionary<string, ICustomCommand> _commands = new();
 
     public CommandParser()
     {
-        _commands = new()
+        LoadCommands();
+    }
+
+    private void LoadCommands()
+    {
+        var commandTypes = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => typeof(ICustomCommand).IsAssignableFrom(t) && !t.IsInterface);
+
+        foreach (var type in commandTypes)
         {
-            { "set", (ctx, args) => ctx.SetVar(args[0], args[1]) },
-            { "unset", (ctx, args) => ctx.UnsetVar(args[0]) },
-            { "echo", (ctx, args) => AnsiConsole.MarkupLine(string.Join(" ", args)) },
-            { "exit", (_, _) => Environment.Exit(0) }
-        };
+            if (Activator.CreateInstance(type) is ICustomCommand cmd)
+            {
+                _commands[cmd.Name] = cmd;
+            }
+        }
     }
 
     public bool TryExecute(string commandLine, ShellContext context)
     {
-        var expanded = context.ExpandVariables(commandLine);
-        var sequences = expanded.Split("&&", StringSplitOptions.RemoveEmptyEntries);
+        string expanded = context.ExpandVariables(commandLine);
+        var parts = expanded.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return false;
 
-        foreach (var sequence in sequences)
+        var cmdName = parts[0];
+        var args = parts.Skip(1).ToArray();
+
+        if (_commands.TryGetValue(cmdName, out var command))
         {
-            var commands = sequence.Split('|', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var cmd in commands)
-            {
-                string clean = cmd.Trim();
-                if (string.IsNullOrWhiteSpace(clean)) continue;
-
-                var parts = clean.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                var cmdName = parts[0];
-                var args = parts.Skip(1).ToArray();
-
-                if (_commands.TryGetValue(cmdName, out var action))
-                {
-                    try
-                    {
-                        action(context, args);
-                    }
-                    catch (Exception e)
-                    {
-                        AnsiConsole.MarkupLine($"[red]Command error: {e.Message}[/]");
-                    }
-                }
-                else
-                {
-                    ExecuteWithBash(clean);
-                }
-            }
+            command.Execute(context, args);
+            return true;
         }
 
+        ExecuteFallback(cmdName, args);
         return true;
     }
 
-    private void ExecuteWithBash(string line)
+    private void ExecuteFallback(string cmdName, string[] args)
     {
+        var line = $"{cmdName} {string.Join(" ", args)}";
+
         try
         {
-            string shell;
-            string args;
+            string shell, shellArgs;
 
             if (OperatingSystem.IsWindows())
             {
                 shell = "wsl.exe";
-                args = line;
+                shellArgs = line;
             }
             else
             {
                 shell = "/bin/bash";
-                args = $"-c \"{line}\"";
+                shellArgs = $"-c \"{line}\"";
             }
 
             var process = new System.Diagnostics.Process()
@@ -78,7 +70,7 @@ public class CommandParser
                 StartInfo = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = shell,
-                    Arguments = args,
+                    Arguments = shellArgs,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -101,5 +93,4 @@ public class CommandParser
             AnsiConsole.MarkupLine($"[red]Shell fallback error: {ex.Message}[/]");
         }
     }
-
 }
