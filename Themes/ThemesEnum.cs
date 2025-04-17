@@ -29,7 +29,7 @@ namespace NihilistShell.Themes
                 ThemesEnum.Default =>
                     $"[white]\u250c[/][bold green][[nihilist-shell@core]][/]\n[white]\u2514[/][blue][[{currentDirectory}]][/] >> ",
                 ThemesEnum.Light =>
-                    $"[white]\u250c[[nihilist-shell@core]][/]\n\u2514[[{currentDirectory}]][/] >> ",
+                    $"[white]\u250c[[nihilist-shell@core]]\n\u2514[[{currentDirectory}]][/] >> ",
                 _ => "[-] - Unknown theme"
             };
         }
