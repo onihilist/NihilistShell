@@ -47,6 +47,8 @@ chmod +x install.sh
 - [ ] Command history
 - [ ] Profiles and theme switching
 - [ ] AI shell assistant (`shizuka-ai`)
+- [ ] Remove Bash FallBack
+- [X] Themes & ThemeLoader
 
 ---
 

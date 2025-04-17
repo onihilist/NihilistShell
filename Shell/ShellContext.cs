@@ -1,7 +1,12 @@
-﻿namespace NeonShell.Shell;
+﻿
+using NihilistShell.Themes;
+using Spectre.Console;
+
+namespace NeonShell.Shell;
 
 public class ShellContext
 {
+    private ThemesEnum CurrentTheme = ThemesEnum.Default;
     public Dictionary<string, string> EnvVars { get; set; } = new();
     public string CurrentDirectory { get; set; } = Directory.GetCurrentDirectory();
 
@@ -28,4 +33,27 @@ public class ShellContext
     {
         return EnvVars.TryGetValue(key, out var val) ? val : null;
     }
+    
+    public void SetTheme(string theme)
+    {
+        if (ThemeLoader.TryGetTheme(theme, out var selectedTheme))
+        {
+            CurrentTheme = selectedTheme;
+            AnsiConsole.MarkupLine($"[green][[+]] Thème défini sur : {selectedTheme}[/]");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine($"[red][[-]] Thème inconnu : '{theme}'[/]");
+            AnsiConsole.MarkupLine("[yellow][[*]] Setting default theme...[/]");
+            CurrentTheme = ThemesEnum.Default;
+            AnsiConsole.MarkupLine("[green][[+]] Default theme has been set[/]");
+        }
+    }
+
+
+    public string GetPrompt()
+    {
+        return ThemeLoader.ToStringValue(CurrentTheme, CurrentDirectory);
+    }
+
 }

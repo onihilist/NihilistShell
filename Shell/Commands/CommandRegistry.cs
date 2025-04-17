@@ -12,7 +12,8 @@ public static class CommandRegistry
             new Commands.CdCommand(),
             new Commands.NanoWrapper(),
             new Commands.HistoryWrapper(),
-            new Commands.EchoCommand()
+            new Commands.EchoCommand(),
+            new Commands.SetTheme(),
         };
     }
 }
