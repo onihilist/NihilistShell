@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "[*] - Compiling NeonShell..."
+echo "[*] - Compiling NihilistShell..."
 dotnet publish -c Release -r linux-x64 --self-contained true -o ./publish || exit 1
 
 echo "[*] - Applying executable permissions..."
@@ -18,4 +18,4 @@ echo "[*] - Setting NihilistShell as the default shell for user $USER..."
 chsh -s /usr/local/bin/nihilistshell
 export SHELL=/usr/local/bin/nihilistshell
 
-echo "[+] - Installation complete. Restart your session or run: /usr/local/bin/nihilistshell"
+echo "[+] - Installation complete. Restart your session or run: nihilistshell"
