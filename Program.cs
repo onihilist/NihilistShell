@@ -21,13 +21,13 @@ AnsiConsole.Markup("[bold cyan][[*]] - Booting NihilistShell...[/]\n");
 AnsiConsole.Markup("[bold cyan][[*]] - Loading commands...[/]\n");
 ShellContext context = new();
 CommandParser parser = new();
-await GlitchedPrint("[[+]] - System Online", TimeSpan.FromMilliseconds(20));
+await GlitchedPrint("[+] - System Online", TimeSpan.FromMilliseconds(20));
 Console.WriteLine();
 
 
 while (true)
 {
-    AnsiConsole.Markup($"[bold green][[nihilist-shell@core]][/] [blue]{context.CurrentDirectory}[/] >> ");
+    AnsiConsole.Markup($"[white]\u250c[/][bold green][[nihilist-shell@core]][/]\n[white]\u2514[/][blue][[{context.CurrentDirectory}]][/] >> ");
     string? input = Console.ReadLine()?.Trim();
 
     if (string.IsNullOrWhiteSpace(input)) continue;

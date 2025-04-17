@@ -2,9 +2,10 @@
 
 namespace NeonShell.Commands;
 
-public class NanoWrapper : ICustomCommand, IFallbackAfterExecute
+public class HistoryWrapper : ICustomCommand, IFallbackAfterExecute, IMetadataCommand
 {
-    public string Name => "nano";
+    public string Name => "history";
+    public string Description => "See all the commands in the history";
 
     public bool IsInteractive => true;
 
@@ -12,4 +13,3 @@ public class NanoWrapper : ICustomCommand, IFallbackAfterExecute
 
     public void Execute(ShellContext context, string[] args) {}
 }
-

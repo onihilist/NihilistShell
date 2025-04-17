@@ -1,20 +1,27 @@
 ﻿#!/bin/bash
 
+set -e
+
 echo "[*] - Uninstalling NihilistShell..."
 
 echo "[*] - Setting default shell back to /bin/bash..."
-chsh -s /bin/bash || { echo "[-] - Failed to change default shell."; exit 1; }
+chsh -s /bin/bash || {
+    echo "[-] - Failed to change default shell."
+    exit 1
+}
 
-if [ -f "/usr/local/bin/nihilistshell" ]; then
-    echo "[*] - Removing /usr/local/bin/nihilistshell..."
-    sudo rm /usr/local/bin/neonshell
+BIN_PATH="/usr/local/bin/nihilistshell"
+
+if [ -f "$BIN_PATH" ]; then
+    echo "[*] - Removing $BIN_PATH..."
+    sudo rm "$BIN_PATH"
 else
-    echo "[-] - No executable found at /usr/local/bin/nihilistshell"
+    echo "[-] - No executable found at $BIN_PATH"
 fi
 
-if grep -Fxq "/usr/local/bin/nihilistshell" /etc/shells; then
+if grep -Fxq "$BIN_PATH" /etc/shells; then
     echo "[*] - Cleaning /etc/shells..."
-    sudo sed -i '\|/usr/local/bin/nihilistshell|d' /etc/shells
+    sudo sed -i "\|$BIN_PATH|d" /etc/shells
 else
     echo "[-] - Entry not found in /etc/shells"
 fi

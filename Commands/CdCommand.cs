@@ -12,7 +12,7 @@ public class CdCommand : ICustomCommand
     {
         if (args.Length == 0)
         {
-            AnsiConsole.MarkupLine("[red][*] - Usage: cd <directory>[/]");
+            AnsiConsole.MarkupLine("[red][[*]] - Usage: cd <directory>[/]");
             return;
         }
 
@@ -26,7 +26,7 @@ public class CdCommand : ICustomCommand
         }
         else
         {
-            AnsiConsole.MarkupLine($"[red][-] - No such directory: {fullPath}[/]");
+            AnsiConsole.MarkupLine($"[red][[-]] - No such directory: {fullPath}[/]");
         }
     }
 }

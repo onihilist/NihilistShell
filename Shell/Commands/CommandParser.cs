@@ -37,6 +37,7 @@ public class CommandParser
         {
             command.Execute(context, args);
 
+            // --- Remove this condition you don't want fallback and make your shell from scratch
             if (command is IFallbackAfterExecute fallbackCommand && fallbackCommand.ShouldFallback)
             {
                 ExecuteFallback(cmdName, args);
@@ -45,6 +46,8 @@ public class CommandParser
             return true;
         }
 
+        // --- Remove the ExecuteFallback & uncomment the line below to disable fallback
+        // AnsiConsole.MarkupLine($"[red][-] - Unknown command:[/] [bold yellow]{cmdName}[/]");
         ExecuteFallback(cmdName, args);
         return true;
     }
