@@ -2,11 +2,26 @@
 using NeonShell.Shell;
 using static NeonShell.Animation.GlitchOutput;
 
-AnsiConsole.Markup("[bold cyan]⧖ Booting NeonShell...[/]\n");
-AnsiConsole.Markup("[bold cyan]⧖ Loading commands...[/]\n");
+if (args.Length > 0)
+{
+    switch (args[0])
+    {
+        case "--version":
+        case "-v":
+            Console.WriteLine("NihilistShell v0.1.0");
+            return;
+        case "--help":
+        case "-h":
+            Console.WriteLine("Usage: nihilistshell [--version | --help]");
+            return;
+    }
+}
+
+AnsiConsole.Markup("[bold cyan][[*]] - Booting NihilistShell...[/]\n");
+AnsiConsole.Markup("[bold cyan][[*]] - Loading commands...[/]\n");
 ShellContext context = new();
 CommandParser parser = new();
-await GlitchedPrint("System Online", TimeSpan.FromMilliseconds(30));
+await GlitchedPrint("\u2714\ufe0f System Online", TimeSpan.FromMilliseconds(30));
 Console.WriteLine();
 
 

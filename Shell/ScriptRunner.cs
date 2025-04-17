@@ -26,7 +26,7 @@ public static class ScriptRunner
                 AnsiConsole.Markup($"[red]Unknown command in script: {command}[/]\n");
             }
 
-            Thread.Sleep(500); // petite pause entre les lignes pour le style
+            Thread.Sleep(500);
         }
     }
 }

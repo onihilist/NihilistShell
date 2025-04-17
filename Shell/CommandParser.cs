@@ -1,4 +1,4 @@
-﻿using Spectre.Console;
+using Spectre.Console;
 using System.Reflection;
 
 namespace NeonShell.Shell;
@@ -48,49 +48,41 @@ public class CommandParser
 
     private void ExecuteFallback(string cmdName, string[] args)
     {
-        var line = $"{cmdName} {string.Join(" ", args)}";
+        string line = $"{cmdName} {string.Join(" ", args)}";
 
-        try
+        string shell = OperatingSystem.IsWindows() ? "wsl.exe" : "/bin/bash";
+        string shellArgs = OperatingSystem.IsWindows() ? line : $"-c \"{line}\"";
+
+        var process = new System.Diagnostics.Process
         {
-            string shell, shellArgs;
-
-            if (OperatingSystem.IsWindows())
+            StartInfo = new System.Diagnostics.ProcessStartInfo
             {
-                shell = "wsl.exe";
-                shellArgs = line;
+                FileName = shell,
+                Arguments = shellArgs,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false
             }
-            else
-            {
-                shell = "/bin/bash";
-                shellArgs = $"-c \"{line}\"";
-            }
+        };
 
-            var process = new System.Diagnostics.Process()
-            {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = shell,
-                    Arguments = shellArgs,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
+        process.OutputDataReceived += (sender, e) => {
+            if (!string.IsNullOrEmpty(e.Data))
+                Console.WriteLine(e.Data);
+        };
 
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
-            process.WaitForExit();
+        process.ErrorDataReceived += (sender, e) => {
+            if (!string.IsNullOrEmpty(e.Data))
+                Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(e.Data);
+            Console.ResetColor();
+        };
 
-            if (!string.IsNullOrWhiteSpace(output))
-                Console.WriteLine(output);
-            if (!string.IsNullOrWhiteSpace(error))
-                AnsiConsole.MarkupLine($"[red]{error}[/]");
-        }
-        catch (Exception ex)
-        {
-            AnsiConsole.MarkupLine($"[red]Shell fallback error: {ex.Message}[/]");
-        }
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+        process.WaitForExit();
     }
+
 }
