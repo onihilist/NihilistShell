@@ -1,0 +1,9 @@
+bin/
+obj/
+/packages/
+.idea
+riderModule.iml
+/_ReSharper.Caches/
+NeonShell.csproj
+NeonShell.sln
+NeonShell.sln.DotSettings.user
