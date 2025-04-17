@@ -21,7 +21,7 @@ AnsiConsole.Markup("[bold cyan][[*]] - Booting NihilistShell...[/]\n");
 AnsiConsole.Markup("[bold cyan][[*]] - Loading commands...[/]\n");
 ShellContext context = new();
 CommandParser parser = new();
-await GlitchedPrint("[[OK]] - System Online", TimeSpan.FromMilliseconds(20));
+await GlitchedPrint("[[+]] - System Online", TimeSpan.FromMilliseconds(20));
 Console.WriteLine();
 
 
@@ -38,6 +38,6 @@ while (true)
     }
     catch (Exception ex)
     {
-        AnsiConsole.MarkupLine($"[red]💥 Shell crash: {ex.Message}[/]");
+        AnsiConsole.MarkupLine($"[red][-] - Shell crash: {ex.Message}[/]");
     }
 }

@@ -18,7 +18,7 @@ public class CommandParser
         foreach (var command in CommandRegistry.GetAll())
         {
             _commands[command.Name] = command;
-            Spectre.Console.AnsiConsole.MarkupLine($"\t[green][[OK]][/] Loaded command: [yellow]{command.Name}[/]");
+            Spectre.Console.AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded command: [yellow]{command.Name}[/]");
         }
 
         Spectre.Console.AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{_commands.Count}[/]");

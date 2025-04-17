@@ -8,7 +8,7 @@ public static class ScriptRunner
     {
         if (!File.Exists(path))
         {
-            AnsiConsole.Markup($"[red]❌ Script not found: {path}[/]\n");
+            AnsiConsole.Markup($"[red][-] - Script not found: {path}[/]\n");
             return;
         }
 
@@ -23,7 +23,7 @@ public static class ScriptRunner
             AnsiConsole.Markup($"[grey]> {command}[/]\n");
             if (!parser.TryExecute(command, ctx))
             {
-                AnsiConsole.Markup($"[red]Unknown command in script: {command}[/]\n");
+                AnsiConsole.Markup($"[red][-] - Unknown command in script: {command}[/]\n");
             }
 
             Thread.Sleep(500);
