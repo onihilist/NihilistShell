@@ -2,6 +2,30 @@
 
 set -e
 
+if ! command -v dotnet &> /dev/null; then
+    echo "[-] - .NET SDK (dotnet) is not installed."
+    read -p "[?] - Do you want to install .NET SDK now? (Y/n): " INSTALL_DOTNET
+    INSTALL_DOTNET=${INSTALL_DOTNET:-Y}
+
+    if [[ "$INSTALL_DOTNET" =~ ^[Yy]$ ]]; then
+        echo "[*] - Installing .NET SDK for Ubuntu..."
+
+        wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        rm packages-microsoft-prod.deb
+
+        sudo apt update
+        sudo apt install -y apt-transport-https
+        sudo apt update
+        sudo apt install -y dotnet-sdk-8.0
+
+        echo "[+] - .NET SDK installed successfully."
+    else
+        echo "[-] - .NET SDK is required. Aborting."
+        exit 1
+    fi
+fi
+
 echo "[*] - Compiling NihilistShell..."
 dotnet publish NihilistShell.csproj \
     -c Release \
