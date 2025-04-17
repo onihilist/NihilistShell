@@ -34,6 +34,7 @@ Clone the repo and install:
 ```bash
 git clone https://github.com/your-username/NihilistShell.git
 cd NihilistShell
+chmod +x install.sh
 ./install.sh
 ```
 
