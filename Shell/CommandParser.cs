@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Spectre.Console;
 using System.Reflection;
 
@@ -11,20 +12,16 @@ public class CommandParser
     {
         LoadCommands();
     }
-
+    
     private void LoadCommands()
     {
-        var commandTypes = Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(t => typeof(ICustomCommand).IsAssignableFrom(t) && !t.IsInterface);
-
-        foreach (var type in commandTypes)
+        foreach (var command in CommandRegistry.GetAll())
         {
-            if (Activator.CreateInstance(type) is ICustomCommand cmd)
-            {
-                _commands[cmd.Name] = cmd;
-            }
+            _commands[command.Name] = command;
+            Spectre.Console.AnsiConsole.MarkupLine($"\t[green][[OK]][/] Loaded command: [yellow]{command.Name}[/]");
         }
+
+        Spectre.Console.AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{_commands.Count}[/]");
     }
 
     public bool TryExecute(string commandLine, ShellContext context)
@@ -75,8 +72,8 @@ public class CommandParser
         process.ErrorDataReceived += (sender, e) => {
             if (!string.IsNullOrEmpty(e.Data))
                 Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(e.Data);
-            Console.ResetColor();
+                Console.WriteLine(e.Data);
+                Console.ResetColor();
         };
 
         process.Start();
@@ -84,5 +81,4 @@ public class CommandParser
         process.BeginErrorReadLine();
         process.WaitForExit();
     }
-
 }

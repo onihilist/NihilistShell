@@ -21,7 +21,7 @@ AnsiConsole.Markup("[bold cyan][[*]] - Booting NihilistShell...[/]\n");
 AnsiConsole.Markup("[bold cyan][[*]] - Loading commands...[/]\n");
 ShellContext context = new();
 CommandParser parser = new();
-await GlitchedPrint("\u2714\ufe0f System Online", TimeSpan.FromMilliseconds(30));
+await GlitchedPrint("[[OK]] - System Online", TimeSpan.FromMilliseconds(20));
 Console.WriteLine();
 
 
