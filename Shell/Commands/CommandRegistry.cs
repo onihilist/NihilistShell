@@ -1,7 +1,7 @@
 ﻿
-using NeonShell.Commands;
+using NihilistShell.Commands;
 
-namespace NeonShell.Shell;
+namespace NihilistShell.Shell;
 
 /// <summary>
 /// <c>CommandRegistry</c> is responsible for registering all custom commands used in the shell.

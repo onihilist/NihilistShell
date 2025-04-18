@@ -3,7 +3,7 @@ using Spectre.Console;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace NeonShell.Shell;
+namespace NihilistShell.Shell;
 
 /// <summary>
 /// <c>CommandParser</c> class handles loading and execution of shell commands.
@@ -16,7 +16,7 @@ public class CommandParser
     private readonly HashSet<string> _systemCommands = new();
     private static readonly HashSet<string> InteractiveCommands = new()
     {
-        "vim", "nano", "less", "more", "top", "htop", "man", "ssh"
+        "vim", "nano", "less", "more", "top", "htop", "man", "ssh", "apt"
     };
 
     /// <summary>

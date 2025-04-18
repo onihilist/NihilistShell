@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
-using NeonShell.Shell;
-using static NeonShell.Animation.GlitchOutput;
+using NihilistShell.Shell;
+using static NihilistShell.Animation.GlitchOutput;
 
 if (args.Length > 0)
 {

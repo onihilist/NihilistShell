@@ -1,8 +1,8 @@
 ﻿
-using NeonShell.Shell;
+using NihilistShell.Shell;
 using Spectre.Console;
 
-namespace NeonShell.Commands;
+namespace NihilistShell.Commands;
 
 public class SetTheme : ICustomCommand, IMetadataCommand
 {

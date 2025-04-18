@@ -1,5 +1,5 @@
 ﻿
-namespace NeonShell.Shell;
+namespace NihilistShell.Shell;
 
 /// <summary>
 /// The <c>ICustomCommand</c> interface defines a contract for implementing

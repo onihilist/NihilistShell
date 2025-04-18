@@ -2,7 +2,7 @@
 using NihilistShell.Themes;
 using Spectre.Console;
 
-namespace NeonShell.Shell;
+namespace NihilistShell.Shell;
 
 /// <summary>
 /// The <c>ShellContext</c> class manages the shell environment, including environment variables,

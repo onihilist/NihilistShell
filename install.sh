@@ -49,12 +49,11 @@ chmod +x "$BINARY"
 echo "[*] - Copying to /usr/local/bin/ as 'nihilistshell'..."
 sudo cp "$BINARY" /usr/local/bin/nihilistshell
 
-echo "[*] - Adding to /etc/shells if not already present..."
-if ! grep -q 'export SHELL=/usr/local/bin/nihilistshell' ~/.bashrc; then
-    echo 'export SHELL=/usr/local/bin/nihilistshell' >> ~/.bashrc
-    echo "[*] - Added export SHELL to ~/.bashrc"
+echo "[*] - Adding /usr/local/bin/nihilistshell to /etc/shells if not already present..."
+if ! grep -qx "/usr/local/bin/nihilistshell" /etc/shells; then
+    echo "/usr/local/bin/nihilistshell" | sudo tee -a /etc/shells > /dev/null
+    echo "[+] - Added NihilistShell to /etc/shells."
 fi
-
 
 echo "[*] - Setting NihilistShell as the default shell for user $USER..."
 chsh -s /usr/local/bin/nihilistshell

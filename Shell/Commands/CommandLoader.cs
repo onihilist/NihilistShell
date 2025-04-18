@@ -1,7 +1,7 @@
 ﻿
 using Spectre.Console;
 
-namespace NeonShell.Shell;
+namespace NihilistShell.Shell;
 
 /// <summary>
 /// <c>CommandLoader</c> is responsible for loading custom and system commands.

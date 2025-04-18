@@ -1,5 +1,5 @@
 ﻿
-namespace NeonShell.Animation;
+namespace NihilistShell.Animation;
 
 /// <summary>
 /// The <c>GlitchOutput</c> class provides a method to simulate a "glitch" text animation effect

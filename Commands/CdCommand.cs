@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using NeonShell.Shell;
+using NihilistShell.Shell;
 using Spectre.Console;
 
-namespace NeonShell.Commands;
+namespace NihilistShell.Commands;
 
 public class CdCommand : ICustomCommand
 {
