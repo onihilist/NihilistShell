@@ -1,11 +1,18 @@
-﻿using Spectre.Console;
+﻿
+using Spectre.Console;
 
 namespace NeonShell.Shell;
 
+/// <summary>
+/// <c>CommandLoader</c> is responsible for loading custom and system commands.
+/// </summary>
 public static class CommandLoader
 {
-    public static HashSet<string> AvailableCommands = new();
 
+    /// <summary>
+    /// Refresh commands list after each command execute.
+    /// Prevent from installing a binary and don't find it if you don't reboot the shell.
+    /// </summary>
     public static void RefreshCommands()
     {
         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(':') ?? Array.Empty<string>();
@@ -40,8 +47,8 @@ public static class CommandLoader
             }
         }
 
-        //AvailableCommands = newCommands;
-        //AnsiConsole.MarkupLine($"[[[green]+[/]]] - Refreshed command list. Found {AvailableCommands.Count} commands.");
+        HashSet<string> availableCommands = newCommands;
+        AnsiConsole.MarkupLine($"[[[green]+[/]]] - Refreshed command list. Found {availableCommands.Count} new commands.");
     }
     
 }

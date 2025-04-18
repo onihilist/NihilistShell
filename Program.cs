@@ -27,9 +27,6 @@ Console.WriteLine();
 
 while (true)
 {
-    
-    CommandLoader.RefreshCommands();
-    
     AnsiConsole.Markup(context.GetPrompt());
     string? input = Console.ReadLine()?.Trim();
 
@@ -43,4 +40,6 @@ while (true)
     {
         AnsiConsole.MarkupLine($"[red][[-]] - Shell crash: {ex.Message}[/]");
     }
+    
+    CommandLoader.RefreshCommands();
 }

@@ -1,7 +1,22 @@
-﻿namespace NeonShell.Animation;
+﻿
+namespace NeonShell.Animation;
 
+/// <summary>
+/// The <c>GlitchOutput</c> class provides a method to simulate a "glitch" text animation effect
+/// by displaying characters that gradually resolve into the intended message.
+/// </summary>
 public static class GlitchOutput
 {
+    /// <summary>
+    /// Asynchronously prints a message to the console using a glitch animation effect.
+    /// Each character is temporarily replaced with random symbols before settling on its final form.
+    /// </summary>
+    /// <param name="message">The final message to display.</param>
+    /// <param name="delayPerChar">
+    /// The delay between each character reveal, influencing the total animation time.
+    /// A shorter delay results in faster glitch transitions.
+    /// </param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous animation operation.</returns>
     public static async Task GlitchedPrint(string message, TimeSpan delayPerChar)
     {
         var rand = new Random();

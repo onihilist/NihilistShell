@@ -1,24 +1,35 @@
+
 using Spectre.Console;
 using System.Diagnostics;
 using System.Reflection;
 
 namespace NeonShell.Shell;
 
+/// <summary>
+/// <c>CommandParser</c> class handles loading and execution of shell commands.
+/// It supports custom commands, system commands, and privilege management (e.g., sudo).
+/// </summary>
 public class CommandParser
 {
+
     private readonly Dictionary<string, ICustomCommand> _commands = new();
     private readonly HashSet<string> _systemCommands = new();
-    
     private static readonly HashSet<string> InteractiveCommands = new()
     {
         "vim", "nano", "less", "more", "top", "htop", "man", "ssh"
     };
 
+    /// <summary>
+    /// Constructor that loads the commands when the parser is instantiated.
+    /// </summary>
     public CommandParser()
     {
         LoadCommands();
     }
 
+    /// <summary>
+    /// Loads all the custom commands and system commands from predefined directories.
+    /// </summary>
     private void LoadCommands()
     {
         foreach (var command in CommandRegistry.GetAll())
@@ -31,12 +42,12 @@ public class CommandParser
         AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{_commands.Count + _systemCommands.Count}[/]");
     }
 
+    /// <summary>
+    /// Loads system commands from typical binary directories.
+    /// </summary>
     private void LoadSystemCommands()
     {
-        var paths = new[]
-        {
-            "/usr/bin", "/usr/local/bin", "/usr/games", "/bin", "/sbin", "/usr/sbin"
-        };
+        var paths = new[] { "/usr/bin", "/usr/local/bin", "/usr/games", "/bin", "/sbin", "/usr/sbin" };
 
         foreach (var dir in paths)
         {
@@ -55,6 +66,13 @@ public class CommandParser
         }
     }
 
+    /// <summary>
+    /// Attempts to execute a command from the provided command line input.
+    /// Handles variable expansion, root privileges, and command execution.
+    /// </summary>
+    /// <param name="commandLine">The command line string entered by the user.</param>
+    /// <param name="context">The shell context that contains environment variables and the current directory.</param>
+    /// <returns>Returns true if the command was successfully executed, false otherwise.</returns>
     public bool TryExecute(string commandLine, ShellContext context)
     {
         string expanded = context.ExpandVariables(commandLine);
@@ -99,6 +117,11 @@ public class CommandParser
         return true;
     }
 
+    /// <summary>
+    /// Resolves the full path of a system command by searching in common system directories.
+    /// </summary>
+    /// <param name="cmdName">The name of the system command.</param>
+    /// <returns>The full path to the command if found, otherwise null.</returns>
     private static string? ResolveSystemCommandPath(string cmdName)
     {
         var paths = new[] { "/usr/bin", "/usr/local/bin", "/usr/games", "/bin", "/sbin", "/usr/sbin" };
@@ -113,11 +136,22 @@ public class CommandParser
         return null;
     }
 
+    /// <summary>
+    /// Checks if a file is executable.
+    /// </summary>
+    /// <param name="path">The path to the file.</param>
+    /// <returns>True if the file is executable, otherwise false.</returns>
     private static bool IsExecutable(string path)
     {
         return (new FileInfo(path).Exists && (new FileInfo(path).Attributes & FileAttributes.Directory) == 0);
     }
 
+    /// <summary>
+    /// Runs a system command, optionally using `sudo`, and handles interactive vs non-interactive command behavior.
+    /// </summary>
+    /// <param name="path">The full path to the system command.</param>
+    /// <param name="args">Arguments to pass to the command.</param>
+    /// <param name="useSudo">Whether to use `sudo` to run the command.</param>
     private static void RunSystemCommand(string path, string[] args, bool useSudo)
     {
         bool isInteractive = InteractiveCommands.Contains(Path.GetFileName(path));
@@ -167,13 +201,23 @@ public class CommandParser
         process.WaitForExit();
     }
 
+    /// <summary>
+    /// Checks if the current user is root.
+    /// </summary>
+    /// <returns>True if the current user is root, otherwise false.</returns>
     private static bool IsRootUser()
     {
         return Environment.UserName == "root" || Environment.GetEnvironmentVariable("USER") == "root";
     }
 
+    /// <summary>
+    /// Escapes markup characters in a string.
+    /// </summary>
+    /// <param name="input">The input string to escape.</param>
+    /// <returns>The escaped string.</returns>
     private static string EscapeMarkup(string input)
     {
         return input.Replace("[", "[[").Replace("]", "]]");
     }
 }
+
