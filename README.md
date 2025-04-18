@@ -60,7 +60,7 @@ If you have any problem with **NihilistShell**, or it locks you out of a proper 
 you can forcefully switch back to `bash` like this:
 
 ```bash
-sudo sed -i 's|/usr/local/bin/nihilistshell|/bin/bash|' /etc/passwd
+sudo sed -i "s|/usr/local/bin/nihilistshell|/bin/bash|" /etc/passwd
 ```
 
 If you got the error "bad interpreter" when running `install.sh` try to run this :

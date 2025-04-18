@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿
+using Spectre.Console;
 using NihilistShell.Shell;
 using static NihilistShell.Animation.GlitchOutput;
 
@@ -27,6 +28,7 @@ Console.WriteLine();
 
 while (true)
 {
+    Environment.SetEnvironmentVariable("LS_COLORS", context.GetLsColors());
     AnsiConsole.Markup(context.GetPrompt());
     string? input = Console.ReadLine()?.Trim();
 

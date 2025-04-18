@@ -39,17 +39,23 @@ namespace NihilistShell.Themes
         /// <param name="theme">The theme to convert.</param>
         /// <param name="currentDirectory">The current directory to display in the prompt.</param>
         /// <returns>A string representing the theme-specific shell prompt with the current directory.</returns>
-        public static string ToStringValue(ThemesEnum theme, string currentDirectory)
+        public static string[] ToStringValue(ThemesEnum theme, string currentDirectory)
         {
             return theme switch
             {
                 ThemesEnum.Default =>
-                    $"[white]\u250c[/][bold green][[nihilist-shell@core]][/]\n[white]\u2514[/][blue][[{currentDirectory}]][/] >> ",
+                    new string[] {
+                        "[white]\u250c[/][bold green][[nihilist-shell@core]][/]\n[white]\u2514[/][blue][[{currentDirectory}]][/] >> ",
+                        "di=34:fi=37:ln=36:pi=33:so=35:ex=32"
+                    },
                 ThemesEnum.Light =>
-                    $"[white]\u250c[[nihilist-shell@core]]\n\u2514[[{currentDirectory}]][/] >> ",
-                _ => "[[-]] - Unknown theme"
+                    new string[] {
+                        "[white]\u250c[[nihilist-shell@core]]\n\u2514[[{currentDirectory}]][/] >> "
+                    },
+                _ => new string[] { "[[-]] - Unknown theme" }
             };
         }
+
 
         public static string[] GetAllThemes()
         {

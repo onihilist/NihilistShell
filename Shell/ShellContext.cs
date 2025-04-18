@@ -90,6 +90,11 @@ public class ShellContext
     /// <returns>The formatted prompt string for the shell.</returns>
     public string GetPrompt()
     {
-        return ThemeLoader.ToStringValue(CurrentTheme, CurrentDirectory);
+        return ThemeLoader.ToStringValue(CurrentTheme, CurrentDirectory)[0];
+    }
+
+    public string GetLsColors()
+    {
+        return ThemeLoader.ToStringValue(CurrentTheme, CurrentDirectory)[1];
     }
 }

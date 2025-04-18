@@ -90,12 +90,54 @@ public class CommandParser
 
         var cmdName = parts[0];
         var args = parts.Skip(1).ToArray();
+        
+        if (cmdName.StartsWith("./") || cmdName.StartsWith("/") || cmdName.Contains("/"))
+        {
+            try
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "/bin/bash",
+                        Arguments = $"-c \"{commandLine}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true,
+                        UseShellExecute = false,  
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                if (!string.IsNullOrWhiteSpace(output))
+                    Console.WriteLine(output);
+
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(error);
+                    Console.ResetColor();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[-] Error executing file: {ex.Message}");
+                return true;
+            }
+        }
 
         if (_commands.TryGetValue(cmdName, out var command))
         {
             if (command is IMetadataCommand meta && meta.RequiresRoot && !(usedSudo || IsRootUser()))
             {
-                AnsiConsole.MarkupLine($"[red][[-]] - This command requires root privileges. Prefix with [bold yellow]sudo[/] or run as root.[/]");
+                AnsiConsole.MarkupLine("[red][[-]] - This command requires root privileges. Prefix with [bold yellow]sudo[/] or run as root.[/]");
                 return true;
             }
 
@@ -113,7 +155,6 @@ public class CommandParser
                 {
                     CommandLoader.RefreshCommands();
                 }
-                
                 return true;
             }
         }
