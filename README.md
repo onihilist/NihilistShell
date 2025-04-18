@@ -1,8 +1,10 @@
-# NihilistShell 🟢
+
+![NShellBanner](https://github.com/user-attachments/assets/f4feb3d9-3105-459f-b9da-c37df1b67446)
 
 > A custom C# interactive shell, customizable.
 
-![NihilistShell Preview](https://github.com/user-attachments/assets/6a22fa38-21db-4ae2-abd4-44d34239044e)
+![NihilistShell Preview](https://github.com/user-attachments/assets/88d01dd0-cae6-4535-a85f-202e30b67a14)
+
 
 ---
 
@@ -61,7 +63,7 @@ you can forcefully switch back to `bash` like this:
 sudo sed -i 's|/usr/local/bin/nihilistshell|/bin/bash|' /etc/passwd
 ```
 
-If you got the error "bad interpreter" when running `install.sh` try to run this : 
+If you got the error "bad interpreter" when running `install.sh` try to run this :
 
 ```bash
 sudo apt update

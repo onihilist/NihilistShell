@@ -35,7 +35,7 @@ public class CommandParser
         foreach (var command in CommandRegistry.GetAll())
         {
             _commands[command.Name] = command;
-            AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded command: [yellow]{command.Name}[/]");
+            AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded custom command: [yellow]{command.Name}[/]");
         }
 
         LoadSystemCommands();
@@ -61,7 +61,7 @@ public class CommandParser
             {
                 _systemCommands.Add(cmd);
                 var safeCmd = EscapeMarkup(cmd);
-                AnsiConsole.MarkupLine($"\t[[[green]+[/]]] Loaded system command: [yellow]{safeCmd}[/]");
+                //AnsiConsole.MarkupLine($"\t[[[green]+[/]]] Loaded system command: [yellow]{safeCmd}[/]");
             }
         }
     }
