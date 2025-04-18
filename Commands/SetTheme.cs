@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace NeonShell.Commands;
 
-public class SetTheme : ICustomCommand, IFallbackAfterExecute, IMetadataCommand
+public class SetTheme : ICustomCommand, IMetadataCommand
 {
     public string Name => "settheme";
     public string Description => "Set the cli theme.";

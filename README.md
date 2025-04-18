@@ -45,9 +45,9 @@ chmod +x install.sh
 - [ ] Plugin support (dynamic loading)
 - [ ] Autocomplete
 - [ ] Command history
-- [ ] Profiles and theme switching
+- [X] Profiles and theme switching
 - [ ] AI shell assistant (`shizuka-ai`)
-- [ ] Remove Bash FallBack
+- [X] Remove Bash FallBack
 - [X] Themes & ThemeLoader
 
 ---

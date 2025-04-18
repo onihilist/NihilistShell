@@ -39,14 +39,14 @@ public class ShellContext
         if (ThemeLoader.TryGetTheme(theme, out var selectedTheme))
         {
             CurrentTheme = selectedTheme;
-            AnsiConsole.MarkupLine($"[green][[+]] Thème défini sur : {selectedTheme}[/]");
+            AnsiConsole.MarkupLine($"[[[green]+[/]]] Thème défini sur : [yellow]{selectedTheme}[/]");
         }
         else
         {
-            AnsiConsole.MarkupLine($"[red][[-]] Thème inconnu : '{theme}'[/]");
-            AnsiConsole.MarkupLine("[yellow][[*]] Setting default theme...[/]");
+            AnsiConsole.MarkupLine($"[[[red]-[/]]] Thème inconnu : '[yellow]{theme}[/]'");
+            AnsiConsole.MarkupLine("[[[yellow]*[/]]] Setting default theme...");
             CurrentTheme = ThemesEnum.Default;
-            AnsiConsole.MarkupLine("[green][[+]] Default theme has been set[/]");
+            AnsiConsole.MarkupLine("[[[green]+[/]]] Default theme has been set");
         }
     }
 
