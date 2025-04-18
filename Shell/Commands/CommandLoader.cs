@@ -10,7 +10,7 @@ public static class CommandLoader
 {
 
     /// <summary>
-    /// Refresh commands list after each command execute.
+    /// Refresh commands list after each apt/apt-get install.
     /// Prevent from installing a binary and don't find it if you don't reboot the shell.
     /// </summary>
     public static void RefreshCommands()

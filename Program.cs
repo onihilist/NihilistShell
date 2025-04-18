@@ -40,6 +40,4 @@ while (true)
     {
         AnsiConsole.MarkupLine($"[red][[-]] - Shell crash: {ex.Message}[/]");
     }
-    
-    CommandLoader.RefreshCommands();
 }

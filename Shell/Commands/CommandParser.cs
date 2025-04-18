@@ -108,7 +108,12 @@ public class CommandParser
             var fullPath = ResolveSystemCommandPath(cmdName);
             if (fullPath != null)
             {
-                RunSystemCommand(fullPath, args, usedSudo);
+                bool success = RunSystemCommand(fullPath, args, usedSudo);
+                if ((cmdName == "apt" || cmdName == "apt-get") && args.Length > 0 && args[0] == "install")
+                {
+                    CommandLoader.RefreshCommands();
+                }
+                
                 return true;
             }
         }
@@ -152,7 +157,7 @@ public class CommandParser
     /// <param name="path">The full path to the system command.</param>
     /// <param name="args">Arguments to pass to the command.</param>
     /// <param name="useSudo">Whether to use `sudo` to run the command.</param>
-    private static void RunSystemCommand(string path, string[] args, bool useSudo)
+    private static bool RunSystemCommand(string path, string[] args, bool useSudo)
     {
         bool isInteractive = InteractiveCommands.Contains(Path.GetFileName(path));
 
@@ -167,10 +172,7 @@ public class CommandParser
             CreateNoWindow = false
         };
 
-        var process = new Process
-        {
-            StartInfo = startInfo
-        };
+        var process = new Process { StartInfo = startInfo };
 
         if (!isInteractive)
         {
@@ -199,6 +201,8 @@ public class CommandParser
         }
 
         process.WaitForExit();
+
+        return process.ExitCode == 0;
     }
 
     /// <summary>
