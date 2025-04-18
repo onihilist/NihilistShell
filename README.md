@@ -42,13 +42,12 @@ chmod +x install.sh
 
 ### 📡 Roadmap
 
-- [ ] Plugin support (dynamic loading)
-- [ ] Autocomplete
-- [ ] Command history
-- [X] Profiles and theme switching
-- [ ] AI shell assistant (`shizuka-ai`)
-- [X] Remove Bash FallBack
-- [X] Themes & ThemeLoader
+- [OPEN] Plugin support (dynamic loading)
+- [OPEN] Autocomplete
+- [OPEN] Command history
+- [OK] Profiles and theme switching
+- [OK] Remove Bash FallBack
+- [OK] Themes & ThemeLoader
 
 ---
 
