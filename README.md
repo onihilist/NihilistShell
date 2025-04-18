@@ -40,11 +40,12 @@ chmod +x install.sh
 
 ---
 
-### 📡 Roadmap
+### 📡 Roadmap v1.0.0
 
 - [OPEN] Plugin support (dynamic loading)
 - [OPEN] Autocomplete
 - [OPEN] Command history
+- [OPEN] Fix neofetch shell version
 - [OK] Profiles and theme switching
 - [OK] Remove Bash FallBack
 - [OK] Themes & ThemeLoader
