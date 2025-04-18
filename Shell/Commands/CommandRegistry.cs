@@ -9,16 +9,8 @@ public static class CommandRegistry
     {
         return new List<ICustomCommand>
         {
-            // Custom commands
             new CdCommand(),
             new SetTheme(),
-            
-            // Commands Wrappers
-            new SudoWrapper(),
-            new AptWrapper(),
-            new EchoWrapper(),
-            new NanoWrapper(),
-            new HistoryWrapper(),
         };
     }
 }
