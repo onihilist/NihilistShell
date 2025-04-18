@@ -60,3 +60,11 @@ you can forcefully switch back to `bash` like this:
 ```bash
 sudo sed -i 's|/usr/local/bin/nihilistshell|/bin/bash|' /etc/passwd
 ```
+
+If you got the error "bad interpreter" when running `install.sh` try to run this : 
+
+```bash
+sudo apt update
+sudo apt install dos2unix
+dos2unix install.sh
+```
