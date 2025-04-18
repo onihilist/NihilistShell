@@ -9,11 +9,16 @@ public static class CommandRegistry
     {
         return new List<ICustomCommand>
         {
-            new Commands.CdCommand(),
-            new Commands.NanoWrapper(),
-            new Commands.HistoryWrapper(),
-            new Commands.EchoCommand(),
-            new Commands.SetTheme(),
+            // Custom commands
+            new CdCommand(),
+            new SetTheme(),
+            
+            // Commands Wrappers
+            new SudoWrapper(),
+            new AptWrapper(),
+            new EchoWrapper(),
+            new NanoWrapper(),
+            new HistoryWrapper(),
         };
     }
 }

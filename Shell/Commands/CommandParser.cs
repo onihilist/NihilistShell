@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Spectre.Console;
 using System.Reflection;
 
@@ -12,16 +11,16 @@ public class CommandParser
     {
         LoadCommands();
     }
-    
+
     private void LoadCommands()
     {
         foreach (var command in CommandRegistry.GetAll())
         {
             _commands[command.Name] = command;
-            Spectre.Console.AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded command: [yellow]{command.Name}[/]");
+            AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded command: [yellow]{command.Name}[/]");
         }
 
-        Spectre.Console.AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{_commands.Count}[/]");
+        AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{_commands.Count}[/]");
     }
 
     public bool TryExecute(string commandLine, ShellContext context)
@@ -30,67 +29,87 @@ public class CommandParser
         var parts = expanded.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0) return false;
 
+        bool usedSudo = false;
+
+        if (parts[0] == "sudo")
+        {
+            usedSudo = true;
+            parts = parts.Skip(1).ToArray();
+        }
+
+        if (parts.Length == 0) return false;
+
         var cmdName = parts[0];
         var args = parts.Skip(1).ToArray();
 
         if (_commands.TryGetValue(cmdName, out var command))
         {
-            command.Execute(context, args);
-
-            // --- Remove this condition you don't want fallback and make your shell from scratch
-            if (command is IFallbackAfterExecute fallbackCommand && fallbackCommand.ShouldFallback)
+            if (command is IMetadataCommand meta)
             {
-                ExecuteFallback(cmdName, args);
+                if (meta.RequiresRoot && !(usedSudo || IsRootUser()))
+                {
+                    AnsiConsole.MarkupLine($"[red][-] - This command requires root privileges. Prefix with [bold yellow]sudo[/] or run as root.[/]");
+                    return true;
+                }
             }
 
+            command.Execute(context, args);
             return true;
         }
 
-        // --- Remove the ExecuteFallback & uncomment the line below to disable fallback
-        // AnsiConsole.MarkupLine($"[red][-] - Unknown command:[/] [bold yellow]{cmdName}[/]");
-        ExecuteFallback(cmdName, args);
+        // Fallback to system binary in /usr/bin
+        string path = $"/usr/bin/{cmdName}";
+        if (File.Exists(path) && IsExecutable(path))
+        {
+            RunSystemCommand(path, args, usedSudo);
+            return true;
+        }
+
+        AnsiConsole.MarkupLine($"[red][-] - Unknown command:[/] [bold yellow]{cmdName}[/]");
         return true;
     }
 
-
-    private void ExecuteFallback(string cmdName, string[] args)
+    private static bool IsExecutable(string path)
     {
-        string line = $"{cmdName} {string.Join(" ", args)}";
+        return (new FileInfo(path).Exists && (new FileInfo(path).Attributes & FileAttributes.Directory) == 0);
+    }
 
-        string shell = OperatingSystem.IsWindows() ? "wsl.exe" : "/bin/bash";
-        string shellArgs = OperatingSystem.IsWindows() ? line : $"-c \"{line}\"";
-        var interactiveCommands = new HashSet<string> { "nano", "vim", "less", "top", "htop", "man" };
-        bool isInteractive = interactiveCommands.Contains(cmdName);
+    private static void RunSystemCommand(string path, string[] args, bool useSudo)
+    {
+        var startInfo = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = useSudo ? "/usr/bin/sudo" : path,
+            Arguments = useSudo ? $"{path} {string.Join(' ', args)}" : string.Join(' ', args),
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            RedirectStandardInput = false,
+            UseShellExecute = false,
+            CreateNoWindow = false
+        };
 
         var process = new System.Diagnostics.Process
         {
-            StartInfo = new System.Diagnostics.ProcessStartInfo
+            StartInfo = startInfo
+        };
+
+        process.OutputDataReceived += (s, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine(e.Data); };
+        process.ErrorDataReceived += (s, e) => {
+            if (!string.IsNullOrWhiteSpace(e.Data))
             {
-                FileName = shell,
-                Arguments = shellArgs,
-                UseShellExecute = isInteractive,
-                RedirectStandardOutput = !isInteractive,
-                RedirectStandardError = !isInteractive,
-                RedirectStandardInput = !isInteractive,
-                CreateNoWindow = false
-            }
-        };
-
-        process.OutputDataReceived += (sender, e) => {
-            if (!string.IsNullOrEmpty(e.Data))
-                Console.WriteLine(e.Data);
-        };
-
-        process.ErrorDataReceived += (sender, e) => {
-            if (!string.IsNullOrEmpty(e.Data))
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(e.Data);
                 Console.ResetColor();
+            }
         };
 
         process.Start();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
         process.WaitForExit();
+    }
+
+    private static bool IsRootUser()
+    {
+        return Environment.UserName == "root" || Environment.GetEnvironmentVariable("USER") == "root";
     }
 }

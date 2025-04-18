@@ -2,7 +2,7 @@
 
 namespace NeonShell.Commands;
 
-public class HistoryWrapper : ICustomCommand, IFallbackAfterExecute, IMetadataCommand
+public class HistoryWrapper : ICustomCommand, IMetadataCommand
 {
     public string Name => "history";
     public string Description => "See all the commands in the history";

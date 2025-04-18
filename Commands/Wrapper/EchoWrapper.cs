@@ -1,17 +1,18 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using NeonShell.Shell;
 using Spectre.Console;
 
 namespace NeonShell.Commands;
 
-public class NanoWrapper : ICustomCommand
+public class EchoWrapper : ICustomCommand, IMetadataCommand
 {
-    public string Name => "nano";
+    public string Name => "echo";
+    public string Description => "Write args in the terminal";
+    public bool   RequiresRoot => false;
 
     public void Execute(ShellContext context, string[] args)
     {
-        RunExternalCommand("nano", args);
+        RunExternalCommand("echo", args);
     }
 
     private void RunExternalCommand(string command, string[] args)
@@ -40,4 +41,3 @@ public class NanoWrapper : ICustomCommand
         }
     }
 }
-
