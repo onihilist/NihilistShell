@@ -76,6 +76,41 @@ while (true)
             inputBuffer = next ?? "";
             Console.Write(inputBuffer);
         }
+        else if (key.Key == ConsoleKey.Tab)
+        {
+            if (inputBuffer.StartsWith("cd "))
+            {
+                string path = inputBuffer.Substring(3);
+                string currentDir = Directory.GetCurrentDirectory();
+                string fullPath = Path.Combine(currentDir, path);
+                
+                if (Directory.Exists(fullPath))
+                {
+                    inputBuffer += Path.DirectorySeparatorChar;
+                    
+                    var directories = Directory.GetDirectories(fullPath);
+                    
+                    if (directories.Length > 0)
+                    {
+                        string directoryToSuggest = directories[0];
+                        Console.Write(new string('\b', inputBuffer.Length) + new string(' ', inputBuffer.Length) + new string('\b', inputBuffer.Length));
+                        inputBuffer = "cd " + directoryToSuggest;
+                        Console.Write(inputBuffer);
+                    }
+                    else
+                    {
+                        Console.Write(new string('\b', inputBuffer.Length) + new string(' ', inputBuffer.Length) + new string('\b', inputBuffer.Length));
+                        Console.Write(inputBuffer);
+                    }
+                }
+                else
+                {
+                    Console.Write(new string('\b', inputBuffer.Length) + new string(' ', inputBuffer.Length) + new string('\b', inputBuffer.Length));
+                    Console.Write(inputBuffer);
+                }
+            }
+        }
+
         else if (!char.IsControl(key.KeyChar))
         {
             inputBuffer += key.KeyChar;
