@@ -28,11 +28,13 @@ namespace NihilistShell.Shell.Plugins
                     {
                         AnsiConsole.MarkupLine($"\t[[[green]+[/]]] - Loading plugin : [yellow]{plugin}[/].");
                     }
+                    AnsiConsole.MarkupLine($"[bold grey]→ Total plugins loaded:[/] [bold green]{NumberOfPlugins}[/]");
                 }
                 else
                 {
                     NumberOfPlugins = 0;
                     AnsiConsole.MarkupLine($"\t[[[yellow]*[/]]] - No plugins found.");
+                    AnsiConsole.MarkupLine($"[bold grey]→ Total plugins loaded:[/] [bold yellow]{NumberOfPlugins}[/]");
                 }
             }
             else

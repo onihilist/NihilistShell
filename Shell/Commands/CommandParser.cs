@@ -37,8 +37,19 @@ public class CommandParser
             AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded custom command: [yellow]{command.Name}[/]");
         }
 
+        var TotalCommands = _commands.Count + _systemCommands.Count;
+
         LoadSystemCommands();
-        AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{_commands.Count + _systemCommands.Count}[/]");
+
+        if (TotalCommands > 0)
+        {
+            AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{TotalCommands}[/]");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [yellow]{TotalCommands}[/]");
+        }
+
     }
 
     /// <summary>
