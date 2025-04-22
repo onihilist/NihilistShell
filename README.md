@@ -22,7 +22,7 @@ It's designed for hackers, shell lovers, and those who enjoy boot sequences.
 - ✅ Custom interactive shell interface
 - ✅ Built-in command loader with registration system
 - ✅ Command metadata (`Description`, `IsInteractive`, `RequiresRoot`, etc.)
-- ✅ Bash-like `cd`, `nano`, and fallback to real system commands
+- ✅ Handle customs commands, but load also `/usr/bin`, `/usr/sbin`..ect commands.
 - ✅ Spectre.Console markup support for colors, glitches, animations
 - ✅ Full AOT support (with manual command registration)
 - ✅ Future-proof extensibility (plugin-style architecture)
