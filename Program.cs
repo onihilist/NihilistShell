@@ -1,6 +1,7 @@
 ﻿
 using Spectre.Console;
 using NihilistShell.Shell;
+using NihilistShell.Shell.History;
 using static NihilistShell.Animation.GlitchOutput;
 
 if (args.Length > 0)
@@ -22,21 +23,73 @@ AnsiConsole.Markup("[bold cyan][[*]] - Booting NihilistShell...[/]\n");
 AnsiConsole.Markup("[bold cyan][[*]] - Loading commands...[/]\n");
 ShellContext context = new();
 CommandParser parser = new();
+HistoryManager history = new();
+
+AppDomain.CurrentDomain.ProcessExit += (_, _) => {
+    history.Save();
+};
+
 await GlitchedPrint("[+] - System Online", TimeSpan.FromMilliseconds(20));
 Console.WriteLine();
 
+
+ConsoleKeyInfo key;
+string inputBuffer = "";
+history.ResetIndex();
 
 while (true)
 {
     Environment.SetEnvironmentVariable("LS_COLORS", context.GetLsColors());
     AnsiConsole.Markup(context.GetPrompt());
-    string? input = Console.ReadLine()?.Trim();
+    inputBuffer = "";
+    history.ResetIndex();
 
-    if (string.IsNullOrWhiteSpace(input)) continue;
+    while (true)
+    {
+        key = Console.ReadKey(intercept: true);
+
+        if (key.Key == ConsoleKey.Enter)
+        {
+            Console.WriteLine();
+            break;
+        }
+
+        if (key.Key == ConsoleKey.Backspace && inputBuffer.Length > 0)
+        {
+            inputBuffer = inputBuffer[..^1];
+            Console.Write("\b \b");
+        }
+        else if (key.Key == ConsoleKey.UpArrow)
+        {
+            var prev = history.GetPrevious();
+            if (prev != null)
+            {
+                Console.Write(new string('\b', inputBuffer.Length) + new string(' ', inputBuffer.Length) + new string('\b', inputBuffer.Length));
+                inputBuffer = prev;
+                Console.Write(inputBuffer);
+            }
+        }
+        else if (key.Key == ConsoleKey.DownArrow)
+        {
+            var next = history.GetNext();
+            Console.Write(new string('\b', inputBuffer.Length) + new string(' ', inputBuffer.Length) + new string('\b', inputBuffer.Length));
+            inputBuffer = next ?? "";
+            Console.Write(inputBuffer);
+        }
+        else if (!char.IsControl(key.KeyChar))
+        {
+            inputBuffer += key.KeyChar;
+            Console.Write(key.KeyChar);
+        }
+    }
+
+    if (string.IsNullOrWhiteSpace(inputBuffer)) continue;
+
+    history.Add(inputBuffer);
 
     try
     {
-        parser.TryExecute(input, context);
+        parser.TryExecute(inputBuffer, context);
     }
     catch (Exception ex)
     {

@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace NihilistShell.Commands;
 
-public class SetTheme : ICustomCommand, IMetadataCommand
+public class SetThemeCommand : ICustomCommand, IMetadataCommand
 {
     public string Name => "settheme";
     public string Description => "Set the cli theme.";

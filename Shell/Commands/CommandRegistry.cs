@@ -17,7 +17,7 @@ public static class CommandRegistry
         return new List<ICustomCommand>
         {
             new CdCommand(),
-            new SetTheme(),
+            new SetThemeCommand(),
         };
     }
 }
