@@ -1,7 +1,6 @@
 
 using Spectre.Console;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace NihilistShell.Shell;
 
