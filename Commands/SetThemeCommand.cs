@@ -19,11 +19,9 @@ namespace NihilistShell.Commands
             }
 
             string themeName = args[0];
-
-            // Essaye de changer le thème dans le contexte
+            
             context.SetTheme(themeName);
-
-            // Affiche un message de confirmation
+            
             AnsiConsole.MarkupLine($"[green]Theme set to: {themeName}[/]");
         }
     }
