@@ -45,12 +45,12 @@ namespace NihilistShell.Themes
             {
                 ThemesEnum.Default =>
                     new string[] {
-                        $"[white]\u250c[/][bold green][[nihilist-shell@core]][/]\n[white]\u2514[/][blue][[{currentDirectory}]][/] >> ",
+                        $"[white]\u250c[/][bold green][[{Environment.UserName}@{Environment.MachineName}]][/]\n[white]\u2514[/][blue][[{currentDirectory}]][/] >> ",
                         "di=34:fi=37:ln=36:pi=33:so=35:ex=32"
                     },
                 ThemesEnum.Light =>
                     new string[] {
-                        $"[white]\u250c[[nihilist-shell@core]]\n\u2514[[{currentDirectory}]][/] >> "
+                        $"[white]\u250c[[{Environment.UserName}@{Environment.MachineName}]]\n\u2514[[{currentDirectory}]][/] >> "
                     },
                 _ => new string[] { "[[-]] - Unknown theme" }
             };
