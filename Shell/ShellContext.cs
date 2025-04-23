@@ -92,7 +92,7 @@ namespace NihilistShell.Shell
                 .Replace("{cwd}", Directory.GetCurrentDirectory());
         }
         
-        public void SetTheme(string themeName)
+        public bool SetTheme(string themeName)
         {
             string[] themeData;
             
@@ -115,7 +115,9 @@ namespace NihilistShell.Shell
                 AnsiConsole.MarkupLine("[[[yellow]*[/]]] - Theme not found or invalid.");
                 Prompt = $"[white]\u250c[/][bold green][[{Environment.UserName}@{Environment.MachineName}]][/]\n[white]\u2514[/][blue][[{CurrentDirectory}]][/] >> ";
                 LSColors = "di=34:fi=37:ln=36:pi=33:so=35:ex=32";
+                return false;
             }
+            return true;
         }
 
 

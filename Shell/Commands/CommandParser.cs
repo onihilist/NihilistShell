@@ -34,7 +34,7 @@ public class CommandParser
         foreach (var command in CommandRegistry.GetAll())
         {
             _commands[command.Name] = command;
-            AnsiConsole.MarkupLine($"\t[green][[+]][/] Loaded custom command: [yellow]{command.Name}[/]");
+            AnsiConsole.MarkupLine($"\t[[[green]+[/]]] - Loaded custom command: [yellow]{command.Name}[/]");
         }
 
         var TotalCommands = _commands.Count + _systemCommands.Count;
@@ -138,7 +138,7 @@ public class CommandParser
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[-] Error executing file: {ex.Message}");
+                Console.WriteLine($"[[[red]-[/]]] - Error executing file: {ex.Message}");
                 return true;
             }
         }
@@ -169,7 +169,7 @@ public class CommandParser
             }
         }
 
-        AnsiConsole.MarkupLine($"[red][[-]] - Unknown command:[/] [bold yellow]{cmdName}[/]");
+        AnsiConsole.MarkupLine($"[[[red]-[/]]] - Unknown command: [bold yellow]{cmdName}[/]");
         return true;
     }
 

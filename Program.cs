@@ -142,7 +142,7 @@ public class Program
             }
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"[red][[-]] - Shell crash: {ex.Message}[/]");
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Shell crash: [yellow]{ex.Message}[/]");
             }
         }
     }

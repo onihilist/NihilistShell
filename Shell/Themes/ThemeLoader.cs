@@ -58,7 +58,7 @@ namespace NihilistShell.Shell.Themes
                         $"[white]\u250c[[{Environment.UserName}@{Environment.MachineName}]]\n\u2514[[{currentDirectory}]][/] >> ",
                         "di=37:fi=30:ln=36:pi=33:so=35:ex=32"
                     },
-                _ => new string[] { "[[-]] - Unknown theme" }
+                _ => new string[] { "[[[yellow]*[/]]] - Unknown theme" }
             };
         }
 

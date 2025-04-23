@@ -14,15 +14,16 @@ namespace NihilistShell.Commands
         {
             if (args.Length == 0 || args.Length > 1)
             {
-                AnsiConsole.MarkupLine("[red][[*]] - Usage: settheme <theme>[/]");
+                AnsiConsole.MarkupLine("[[[yellow]*[/]]] - Usage: settheme <theme>");
                 return;
             }
 
             string themeName = args[0];
             
-            context.SetTheme(themeName);
-            
-            AnsiConsole.MarkupLine($"[green]Theme set to: {themeName}[/]");
+            bool res = context.SetTheme(themeName);
+
+            if(res){AnsiConsole.MarkupLine($"[[[green]+[/]]] - Theme set to: {themeName}");}
+
         }
     }
 }

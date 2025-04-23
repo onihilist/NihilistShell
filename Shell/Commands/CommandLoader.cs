@@ -35,15 +35,15 @@ public static class CommandLoader
             }
             catch (UnauthorizedAccessException ex)
             {
-                AnsiConsole.MarkupLine($"[red][[-]] - Access denied to directory: {path}. Error: [/][bold yellow]{ex.Message}[/]");
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Access denied to directory: {path}. Error: [bold yellow]{ex.Message}[/]");
             }
             catch (DirectoryNotFoundException ex)
             {
-                AnsiConsole.MarkupLine($"[red][[-]] - Directory not found: {path}. Error: [/][bold yellow]{ex.Message}[/]");
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Directory not found: {path}. Error: [bold yellow]{ex.Message}[/]");
             }
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"[red][[-]] - Error accessing directory {path}:[/] [bold yellow]{ex.Message}[/]");
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Error accessing directory {path}: [bold yellow]{ex.Message}[/]");
             }
         }
 
