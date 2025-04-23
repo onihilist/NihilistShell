@@ -44,9 +44,9 @@ chmod +x install.sh
 
 ### 🎨 Custom themes
 
-This is a little exemple of an custom theme.
-If you are using `format_top/bottom` & `corner_top/bottom`, `format` will be ignored.
-For making a single line prompt use `format`, and double line `format_top/bottom`.
+This is a little exemple of an custom theme.</br>
+If you are using `format_top/bottom` & `corner_top/bottom`, `format` will be ignored.</br>
+For making a single line prompt use `format`, and double line `format_top/bottom`.</br>
 Exemple :
 ```json
 {
@@ -60,8 +60,8 @@ Exemple :
 }
 ```
 
-The name of the theme is `test`, no matter what the file is named.
-So enter the command : `settheme test`.
+The name of the theme is `test`, no matter what the file is named.</br>
+So enter the command : `settheme test`.</br>
 This is the result :
 
 ![Preview Test Theme](https://github.com/user-attachments/assets/c54efcb9-c0a8-48e2-88c9-644c1bd7ccf5)
