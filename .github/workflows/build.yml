@@ -1,0 +1,55 @@
+name: Build and Test NihilistShell
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget curl
+
+      - name: Build the project
+        run: |
+          dotnet restore
+          dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish
+
+      - name: Verify the binary exists
+        run: |
+          if [ ! -f ./publish/NihilistShell ]; then
+            echo "[-] - Binary not found!"
+            exit 1
+          fi
+          echo "[+] - Binary found."
+
+      - name: Set executable permissions
+        run: |
+          chmod +x ./publish/NihilistShell
+
+      - name: Test commands in NihilistShell
+        run: |
+          ./publish/NihilistShell -c "echo 'Test Command 1'"
+          ./publish/NihilistShell -c "cd .."
+          ./publish/NihilistShell -c "ls"
+          ./publish/NihilistShell -c "exit"
+
+      - name: Clean up
+        run: |
+          rm -rf ./publish
