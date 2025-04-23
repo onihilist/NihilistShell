@@ -4,6 +4,9 @@ using Spectre.Console;
 namespace NihilistShell.Shell.Plugins
 {
 
+    /// <summary>
+    /// <c>PluginLoader</c> manage all about loading, parse, execute plugins.
+    /// </summary>
     public class PluginLoader
     {
         private string   PluginFolderPath { get; set; } = $"/home/{Environment.UserName}/.nihilist_shell/plugins";
@@ -12,6 +15,9 @@ namespace NihilistShell.Shell.Plugins
         
         public static PluginLoader Instance { get; private set; } = null!;
 
+        /// <summary>
+        /// Load all plugins into <c>~/.nihilist_shell/plugins</c> folder.
+        /// </summary>
         public void LoadPlugins()
         {
             if (Path.Exists(PluginFolderPath))
