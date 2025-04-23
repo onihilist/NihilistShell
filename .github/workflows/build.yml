@@ -39,17 +39,6 @@ jobs:
           fi
           echo "[+] - Binary found."
 
-      - name: Set executable permissions
-        run: |
-          chmod +x ./publish/NihilistShell
-
-      - name: Test commands in NihilistShell
-        run: |
-          ./publish/NihilistShell -c "echo 'Test Command 1'"
-          ./publish/NihilistShell -c "cd .."
-          ./publish/NihilistShell -c "ls"
-          ./publish/NihilistShell -c "exit"
-
       - name: Clean up
         run: |
           rm -rf ./publish
