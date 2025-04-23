@@ -25,7 +25,7 @@ public class Program
                     return;
             }
         }
-        
+
         AnsiConsole.Clear();
         AnsiConsole.Markup($"Welcome {Environment.UserName} to NihilistShell !\n\n");
         AnsiConsole.Markup($"\tversion : {VERSION}\n");
@@ -98,13 +98,13 @@ public class Program
                         string path = inputBuffer.Substring(3);
                         string currentDir = Directory.GetCurrentDirectory();
                         string fullPath = Path.Combine(currentDir, path);
-                        
+
                         if (Directory.Exists(fullPath))
                         {
                             inputBuffer += Path.DirectorySeparatorChar;
-                            
+
                             var directories = Directory.GetDirectories(fullPath);
-                            
+
                             if (directories.Length > 0)
                             {
                                 string directoryToSuggest = directories[0];
@@ -125,7 +125,6 @@ public class Program
                         }
                     }
                 }
-
                 else if (!char.IsControl(key.KeyChar))
                 {
                     inputBuffer += key.KeyChar;

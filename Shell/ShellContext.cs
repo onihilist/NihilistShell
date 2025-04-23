@@ -1,100 +1,123 @@
-﻿
-using NihilistShell.Themes;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using NihilistShell.Shell.Themes;
 using Spectre.Console;
 
-namespace NihilistShell.Shell;
-
-/// <summary>
-/// The <c>ShellContext</c> class manages the shell environment, including environment variables,
-/// current directory, and the selected theme. It provides methods to expand variables, set,
-/// unset, and retrieve environment variables, as well as change the theme and get the
-/// corresponding shell prompt.
-/// </summary>
-public class ShellContext
+namespace NihilistShell.Shell
 {
-    private ThemesEnum CurrentTheme = ThemesEnum.Default;
-    public Dictionary<string, string> EnvVars { get; set; } = new();
-    public string CurrentDirectory { get; set; } = Directory.GetCurrentDirectory();
-
-    /// <summary>
-    /// Expands environment variables in the provided input string by replacing
-    /// variables of the form $VAR with their values from the EnvVars dictionary.
-    /// </summary>
-    /// <param name="input">The string containing variables to expand.</param>
-    /// <returns>The input string with environment variables expanded.</returns>
-    public string ExpandVariables(string input)
+    public class ShellContext
     {
-        foreach (var kv in EnvVars)
+        public string CurrentDirectory { get; set; }
+        public string Prompt { get; private set; }
+        public string LSColors { get; private set; }
+
+        public ShellContext()
         {
-            input = input.Replace($"${kv.Key}", kv.Value);
+            CurrentDirectory = Directory.GetCurrentDirectory();
+            SetPromptAndColors("default");
         }
-        return input;
-    }
 
-    /// <summary>
-    /// Sets the value of an environment variable.
-    /// </summary>
-    /// <param name="key">The name of the variable.</param>
-    /// <param name="value">The value to set for the variable.</param>
-    public void SetVar(string key, string value)
-    {
-        EnvVars[key] = value;
-    }
-
-    /// <summary>
-    /// Unsets (removes) an environment variable.
-    /// </summary>
-    /// <param name="key">The name of the variable to remove.</param>
-    public void UnsetVar(string key)
-    {
-        EnvVars.Remove(key);
-    }
-
-    /// <summary>
-    /// Retrieves the value of an environment variable.
-    /// </summary>
-    /// <param name="key">The name of the variable to retrieve.</param>
-    /// <returns>The value of the variable, or null if the variable is not set.</returns>
-    public string? GetVar(string key)
-    {
-        return EnvVars.TryGetValue(key, out var val) ? val : null;
-    }
-
-    /// <summary>
-    /// Sets the theme for the shell based on the provided theme name.
-    /// If the theme is valid, it is applied. Otherwise, list all the available themes.
-    /// </summary>
-    /// <param name="theme">The name of the theme to set.</param>
-    public void SetTheme(string theme)
-    {
-        string[] allThemes = ThemeLoader.GetAllThemes();
-        if (ThemeLoader.TryGetTheme(theme, out var selectedTheme))
+        public void SetPromptAndColors(string themeName)
         {
-            CurrentTheme = selectedTheme;
-            AnsiConsole.MarkupLine($"[[[green]+[/]]] Thème défini sur : [yellow]{selectedTheme}[/]");
+            string[] themeData = GetThemePrompt(themeName, CurrentDirectory);
+            Prompt = themeData[0];
+            LSColors = themeData[1];
         }
-        else
+
+        public string GetPrompt()
         {
-            AnsiConsole.MarkupLine($"[[[red]-[/]]] Thème inconnu : '[yellow]{theme}[/]'");
-            AnsiConsole.MarkupLine("[[[blue]*[/]]] Available themes :");
-            for (int i = 0; allThemes.Length < i; i++)
+            return Prompt;
+        }
+
+        public string GetLsColors()
+        {
+            return LSColors;
+        }
+
+        public void ChangeDirectory(string newDir)
+        {
+            if (Directory.Exists(newDir))
             {
-                AnsiConsole.MarkupLine($"\t- {allThemes[i]}");
+                CurrentDirectory = newDir;
+                SetPromptAndColors("default");
             }
         }
-    }
 
-    /// <summary>
-    /// Gets the current prompt for the shell based on the selected theme and current directory.
-    /// </summary>
-    /// <returns>The formatted prompt string for the shell.</returns>
-    public string GetPrompt()
-    {
-        return ThemeLoader.ToStringValue(CurrentTheme, CurrentDirectory)[0];
-    }
+        private string[] GetThemePrompt(string themeName, string currentDirectory)
+        {
+            if (ThemeLoader.TryGetTheme(themeName, out var defaultTheme))
+            {
+                return ThemeLoader.ToStringValue(defaultTheme, currentDirectory);
+            }
+            
+            string themeDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                ".nihilist_shell",
+                "themes"
+            );
 
-    public string GetLsColors()
-    {
-        return ThemeLoader.ToStringValue(CurrentTheme, CurrentDirectory)[1];
+            if (!Directory.Exists(themeDir))
+                return new[] { "[[[red]-[/]]] - Theme directory not found." };
+
+            foreach (var file in Directory.EnumerateFiles(themeDir, "*.json"))
+            {
+                try
+                {
+                    string json = File.ReadAllText(file);
+                    JsonNode? data = JsonNode.Parse(json);
+
+                    if (data is not null && 
+                        data["name"]?.ToString().Equals(themeName, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        return ThemeLoader.LoadCustomTheme(Path.GetFileNameWithoutExtension(file), currentDirectory);
+                    }
+                }
+                catch
+                {
+                    AnsiConsole.MarkupLine($"[[[yellow]*[/]]] - File '{file}' contains errors, impossible to parse/read.[/]");
+                }
+            }
+
+            return new[] { "[[[red]-[/]]] - Theme not found." };
+        }
+        
+        public string ExpandVariables(string input)
+        {
+            return input
+                .Replace("{user}", Environment.UserName)
+                .Replace("{host}", Environment.MachineName)
+                .Replace("{cwd}", Directory.GetCurrentDirectory());
+        }
+        
+        public void SetTheme(string themeName)
+        {
+            string[] themeData;
+            
+            if (ThemeLoader.TryGetTheme(themeName, out var themeEnum))
+            {
+                themeData = ThemeLoader.ToStringValue(themeEnum, CurrentDirectory);
+            }
+            else
+            {
+                themeData = ThemeLoader.LoadCustomTheme(themeName, CurrentDirectory);
+            }
+            
+            if (!themeData[0].Contains("invalid", StringComparison.OrdinalIgnoreCase) && !themeData[0].Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                Prompt = themeData[0];
+                LSColors = themeData[1];
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[[[yellow]*[/]]] - Theme not found or invalid.");
+                Prompt = $"[white]\u250c[/][bold green][[{Environment.UserName}@{Environment.MachineName}]][/]\n[white]\u2514[/][blue][[{CurrentDirectory}]][/] >> ";
+                LSColors = "di=34:fi=37:ln=36:pi=33:so=35:ex=32";
+            }
+        }
+
+
     }
 }

@@ -26,6 +26,20 @@ if ! command -v dotnet &> /dev/null; then
     fi
 fi
 
+USER_PROFILE=$(eval echo ~$USER)
+NIHILIST_SHELL_DIR="$USER_PROFILE/.nihilist_shell"
+THEMES_DIR="$NIHILIST_SHELL_DIR/themes"
+PLUGINS_DIR="$NIHILIST_SHELL_DIR/plugins"
+
+echo "[*] - Creating directories if they don't exist..."
+
+mkdir -p "$THEMES_DIR"
+mkdir -p "$PLUGINS_DIR"
+
+echo "[+] - Directories created or already exist: "
+echo " - $THEMES_DIR"
+echo " - $PLUGINS_DIR"
+
 echo "[*] - Compiling NihilistShell..."
 dotnet publish NihilistShell.csproj \
     -c Release \
