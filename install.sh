@@ -28,17 +28,20 @@ fi
 
 USER_PROFILE=$(eval echo ~$USER)
 NIHILIST_SHELL_DIR="$USER_PROFILE/.nihilist_shell"
+HISTORY_FILE="$NIHILIST_SHELL_DIR/.nihilistshell_history"
 THEMES_DIR="$NIHILIST_SHELL_DIR/themes"
 PLUGINS_DIR="$NIHILIST_SHELL_DIR/plugins"
 
-echo "[*] - Creating directories if they don't exist..."
+echo "[*] - Creating directories/files if they don't exist..."
 
 mkdir -p "$THEMES_DIR"
 mkdir -p "$PLUGINS_DIR"
+touch "$HISTORY_FILE"
 
-echo "[+] - Directories created or already exist: "
+echo "[+] - Directories/Files created or already exist: "
 echo " - $THEMES_DIR"
 echo " - $PLUGINS_DIR"
+echo " - $HISTORY_FILE"
 
 echo "[*] - Compiling NihilistShell..."
 dotnet publish NihilistShell.csproj \
