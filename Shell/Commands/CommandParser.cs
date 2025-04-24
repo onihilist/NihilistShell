@@ -11,8 +11,8 @@ namespace NihilistShell.Shell;
 public class CommandParser
 {
 
-    private readonly Dictionary<string, ICustomCommand> _commands = new();
-    private readonly HashSet<string> _systemCommands = new();
+    public static readonly Dictionary<string, ICustomCommand> CustomCommands = new();
+    public static readonly HashSet<string> SystemCommands = new();
     private static readonly HashSet<string> InteractiveCommands = new()
     {
         "vim", "nano", "less", "more", "top", "htop", "man", "ssh", "apt"
@@ -33,11 +33,11 @@ public class CommandParser
     {
         foreach (var command in CommandRegistry.GetAll())
         {
-            _commands[command.Name] = command;
+            CustomCommands[command.Name] = command;
             AnsiConsole.MarkupLine($"\t[[[green]+[/]]] - Loaded custom command: [yellow]{command.Name}[/]");
         }
 
-        var TotalCommands = _commands.Count + _systemCommands.Count;
+        var TotalCommands = CustomCommands.Count + SystemCommands.Count;
 
         LoadSystemCommands();
 
@@ -69,7 +69,7 @@ public class CommandParser
 
             foreach (var cmd in commands)
             {
-                _systemCommands.Add(cmd);
+                SystemCommands.Add(cmd);
                 var safeCmd = EscapeMarkup(cmd);
                 //AnsiConsole.MarkupLine($"\t[[[green]+[/]]] Loaded system command: [yellow]{safeCmd}[/]");
             }
@@ -143,7 +143,7 @@ public class CommandParser
             }
         }
 
-        if (_commands.TryGetValue(cmdName, out var command))
+        if (CustomCommands.TryGetValue(cmdName, out var command))
         {
             if (command is IMetadataCommand meta && meta.RequiresRoot && !(usedSudo || IsRootUser()))
             {
@@ -155,7 +155,7 @@ public class CommandParser
             return true;
         }
 
-        if (_systemCommands.Contains(cmdName))
+        if (SystemCommands.Contains(cmdName))
         {
             var fullPath = ResolveSystemCommandPath(cmdName);
             if (fullPath != null)

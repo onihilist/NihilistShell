@@ -50,6 +50,7 @@ public class Program
         Console.WriteLine();
 
         ConsoleKeyInfo key;
+        ConsoleKeyInfo promptKey;
         string inputBuffer = "";
         history.ResetIndex();
 
@@ -122,6 +123,85 @@ public class Program
                         else
                         {
                             Console.Write(new string('\b', inputBuffer.Length) + new string(' ', inputBuffer.Length) + new string('\b', inputBuffer.Length));
+                            Console.Write(inputBuffer);
+                        }
+                    } else if (inputBuffer.Length > 0) {
+                        HashSet<string> suggestCommands = new();
+                        HashSet<string> allCommands = CommandParser.CustomCommands.Keys
+                            .Concat(CommandParser.SystemCommands)
+                            .ToHashSet();
+
+                        foreach (var suggestion in allCommands)
+                        {
+                            if (suggestion.StartsWith(inputBuffer))
+                            {
+                                suggestCommands.Add(suggestion);
+                            }
+                        }
+
+                        if (suggestCommands.Count > 15)
+                        {
+                            bool showFullList = false;
+                            AnsiConsole.MarkupLine($"[[[yellow]*[/]]] - Do you want to list all [yellow]{suggestCommands.Count}[/] commands ? ([yellow]y[/]/[yellow]n[/]) >> ");
+                            while (true)
+                            {
+                                promptKey = Console.ReadKey(intercept: true);
+                                if (promptKey.Key == ConsoleKey.Y || promptKey.Key == ConsoleKey.N)
+                                {
+                                    if (promptKey.Key == ConsoleKey.Y)
+                                    {
+                                        showFullList = true;
+                                    }
+                                    break;
+                                }
+                            }
+                            if (showFullList)
+                            {
+                                var sortedCommands = suggestCommands.OrderBy(c => c.Length).ToArray();
+                                int i = 0;
+
+                                foreach (var cmd in sortedCommands)
+                                {
+                                    if (i == 7)
+                                    {
+                                        AnsiConsole.MarkupLine("");
+                                        i = 0;
+                                    }
+                                    AnsiConsole.Markup($"{cmd}  ");
+                                    i++;
+                                }
+
+                                inputBuffer = string.Empty;
+                                AnsiConsole.MarkupLine("");
+                                AnsiConsole.MarkupLine("[[[yellow]*[/]]] - Press enter to continue...");
+                            }
+                        }
+                        else
+                        {
+                            var sortedCommands = suggestCommands.OrderBy(c => c.Length).ToArray();
+                            List<string> commandsList = sortedCommands.ToList();
+
+                            int currentIndex = 0;
+                            
+                            if (!string.IsNullOrEmpty(inputBuffer))
+                            {
+                                for (int i = 0; i < commandsList.Count; i++)
+                                {
+                                    if (commandsList[i].StartsWith(inputBuffer))
+                                    {
+                                        currentIndex = (i + 1) % commandsList.Count;
+                                        inputBuffer = commandsList[currentIndex];
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            Console.SetCursorPosition(0, Console.CursorTop - 1);
+                            Console.SetCursorPosition(0, Console.CursorTop);
+                            Console.Write(new string(' ', Console.WindowWidth));
+                            Console.SetCursorPosition(0, Console.CursorTop);
+                            
+                            AnsiConsole.Markup(context.GetPrompt());
                             Console.Write(inputBuffer);
                         }
                     }
