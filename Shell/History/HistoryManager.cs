@@ -18,7 +18,7 @@ namespace NihilistShell.Shell.History
 
         public HistoryManager(string? path = null)
         {
-            _historyPath = path ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nihilist_history");
+            _historyPath = path ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nihilist_shell/.nihilistshell_history");
             Load();
         }
 

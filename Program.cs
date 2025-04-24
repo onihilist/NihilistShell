@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿
+using Spectre.Console;
 using NihilistShell.Shell;
 using NihilistShell.Shell.History;
 using NihilistShell.Shell.Plugins;
@@ -6,7 +7,7 @@ using static NihilistShell.Animation.GlitchOutput;
 
 public class Program
 {
-    public static readonly string VERSION = "v0.1.0";
+    public static readonly string VERSION = "v0.2.1";
     public static readonly string GITHUB = "https://github.com/onihilist/NihilistShell";
 
     public static async Task Main(string[] args)
