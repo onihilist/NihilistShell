@@ -33,7 +33,7 @@ jobs:
 
       - name: Verify the binary exists
         run: |
-          if [ ! -f ./publish/NihilistShell ]; then
+          if [ ! -f ./publish/NShell ]; then
             echo "[-] - Binary not found!"
             exit 1
           fi
