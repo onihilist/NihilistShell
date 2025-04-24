@@ -1,7 +1,7 @@
 ﻿
-using NihilistShell.Commands;
+using NShell.Commands;
 
-namespace NihilistShell.Shell;
+namespace NShell.Shell.Commands;
 
 /// <summary>
 /// <c>CommandRegistry</c> is responsible for registering all custom commands used in the shell.

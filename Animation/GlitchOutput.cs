@@ -1,5 +1,5 @@
 ﻿
-namespace NihilistShell.Animation;
+namespace NShell.Animation;
 
 /// <summary>
 /// The <c>GlitchOutput</c> class provides a method to simulate a "glitch" text animation effect

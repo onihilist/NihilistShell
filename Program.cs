@@ -1,14 +1,15 @@
 ﻿
 using Spectre.Console;
-using NihilistShell.Shell;
-using NihilistShell.Shell.History;
-using NihilistShell.Shell.Plugins;
-using static NihilistShell.Animation.GlitchOutput;
+using NShell.Shell;
+using NShell.Shell.Commands;
+using NShell.Shell.History;
+using NShell.Shell.Plugins;
+using static NShell.Animation.GlitchOutput;
 
 public class Program
 {
     public static readonly string VERSION = "v0.2.1";
-    public static readonly string GITHUB = "https://github.com/onihilist/NihilistShell";
+    public static readonly string GITHUB = "https://github.com/onihilist/NShell";
 
     public static async Task Main(string[] args)
     {
@@ -18,22 +19,22 @@ public class Program
             {
                 case "--version":
                 case "-v":
-                    Console.WriteLine($"NihilistShell {VERSION}");
+                    Console.WriteLine($"NShell {VERSION}");
                     return;
                 case "--help":
                 case "-h":
-                    Console.WriteLine("Usage: nihilistshell [--version | --help]");
+                    Console.WriteLine("Usage: nshell [--version | --help]");
                     return;
             }
         }
 
         AnsiConsole.Clear();
-        AnsiConsole.Markup($"Welcome {Environment.UserName} to NihilistShell !\n\n");
+        AnsiConsole.Markup($"Welcome {Environment.UserName} to NShell !\n\n");
         AnsiConsole.Markup($"\tversion : {VERSION}\n");
         AnsiConsole.Markup($"\tgithub  : {GITHUB}\n");
         AnsiConsole.Markup("\t\n");
 
-        AnsiConsole.Markup("[bold cyan][[*]] - Booting NihilistShell...[/]\n");
+        AnsiConsole.Markup("[bold cyan][[*]] - Booting NShell...[/]\n");
         ShellContext context = new();
         HistoryManager history = new();
         PluginLoader plugins = new();

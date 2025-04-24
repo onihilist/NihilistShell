@@ -2,7 +2,7 @@
 
 set -e
 
-echo "[*] - Uninstalling NihilistShell..."
+echo "[*] - Uninstalling NShell..."
 
 echo "[*] - Setting default shell back to /bin/bash..."
 chsh -s /bin/bash || {
@@ -10,7 +10,7 @@ chsh -s /bin/bash || {
     exit 1
 }
 
-BIN_PATH="/usr/local/bin/nihilistshell"
+BIN_PATH="/usr/local/bin/nshell"
 
 if [ -f "$BIN_PATH" ]; then
     echo "[*] - Removing $BIN_PATH..."
@@ -32,5 +32,5 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
     echo "[+] - ./publish folder deleted."
 fi
 
-echo "[+] - NihilistShell has been fully uninstalled."
+echo "[+] - NShell has been fully uninstalled."
 echo "[*] - Restart your terminal to return to bash."

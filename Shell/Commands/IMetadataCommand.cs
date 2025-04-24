@@ -1,5 +1,5 @@
 ﻿
-namespace NihilistShell.Shell;
+namespace NShell.Shell;
 
 /// <summary>
 /// The <c>IMetadataCommand</c> interface defines optional metadata 

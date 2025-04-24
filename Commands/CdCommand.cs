@@ -1,8 +1,9 @@
-﻿using System.IO;
-using NihilistShell.Shell;
+﻿
+using System.IO;
+using NShell.Shell;
 using Spectre.Console;
 
-namespace NihilistShell.Commands;
+namespace NShell.Commands;
 
 public class CdCommand : ICustomCommand
 {

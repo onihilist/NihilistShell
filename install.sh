@@ -27,8 +27,8 @@ if ! command -v dotnet &> /dev/null; then
 fi
 
 USER_PROFILE=$(eval echo ~$USER)
-NIHILIST_SHELL_DIR="$USER_PROFILE/.nihilist_shell"
-HISTORY_FILE="$NIHILIST_SHELL_DIR/.nihilistshell_history"
+NIHILIST_SHELL_DIR="$USER_PROFILE/.nshell"
+HISTORY_FILE="$NIHILIST_SHELL_DIR/.nhistory"
 THEMES_DIR="$NIHILIST_SHELL_DIR/themes"
 PLUGINS_DIR="$NIHILIST_SHELL_DIR/plugins"
 
@@ -43,8 +43,8 @@ echo " - $THEMES_DIR"
 echo " - $PLUGINS_DIR"
 echo " - $HISTORY_FILE"
 
-echo "[*] - Compiling NihilistShell..."
-dotnet publish NihilistShell.csproj \
+echo "[*] - Compiling NShell..."
+dotnet publish NShell.csproj \
     -c Release \
     -r linux-x64 \
     --self-contained true \
@@ -53,7 +53,7 @@ dotnet publish NihilistShell.csproj \
     /p:IncludeNativeLibrariesForSelfExtract=true \
     -o ./publish
 
-BINARY="./publish/NihilistShell"
+BINARY="./publish/NShell"
 
 if [ ! -f "$BINARY" ]; then
     echo "[-] - Build failed or binary not found at $BINARY"
@@ -63,17 +63,17 @@ fi
 echo "[*] - Applying executable permissions..."
 chmod +x "$BINARY"
 
-echo "[*] - Copying to /usr/local/bin/ as 'nihilistshell'..."
-sudo cp "$BINARY" /usr/local/bin/nihilistshell
+echo "[*] - Copying to /usr/local/bin/ as 'nshell'..."
+sudo cp "$BINARY" /usr/local/bin/nshell
 
-echo "[*] - Adding /usr/local/bin/nihilistshell to /etc/shells if not already present..."
-if ! grep -qx "/usr/local/bin/nihilistshell" /etc/shells; then
-    echo "/usr/local/bin/nihilistshell" | sudo tee -a /etc/shells > /dev/null
-    echo "[+] - Added NihilistShell to /etc/shells."
+echo "[*] - Adding /usr/local/bin/nshell to /etc/shells if not already present..."
+if ! grep -qx "/usr/local/bin/nshell" /etc/shells; then
+    echo "/usr/local/bin/nshell" | sudo tee -a /etc/shells > /dev/null
+    echo "[+] - Added NShell to /etc/shells."
 fi
 
-echo "[*] - Setting NihilistShell as the default shell for user $USER..."
-chsh -s /usr/local/bin/nihilistshell
-export SHELL=/usr/local/bin/nihilistshell
+echo "[*] - Setting NShell as the default shell for user $USER..."
+chsh -s /usr/local/bin/nshell
+export SHELL=/usr/local/bin/nshell
 
-echo "[+] - Installation complete. Restart your session or run: nihilistshell"
+echo "[+] - Installation complete. Restart your session or run: nshell"
