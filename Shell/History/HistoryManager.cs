@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace NihilistShell.Shell.History
+namespace NShell.Shell.History
 {
     /// <summary>
     /// <c>HistoryManager</c> class provide all methods about history.

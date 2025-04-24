@@ -1,7 +1,7 @@
 
 using Spectre.Console;
 
-namespace NihilistShell.Shell.Plugins
+namespace NShell.Shell.Plugins
 {
 
     /// <summary>

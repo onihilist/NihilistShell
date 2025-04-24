@@ -1,7 +1,8 @@
-﻿using NihilistShell.Shell;
+﻿
+using NShell.Shell;
 using Spectre.Console;
 
-namespace NihilistShell.Commands
+namespace NShell.Commands
 {
     public class SetThemeCommand : ICustomCommand, IMetadataCommand
     {

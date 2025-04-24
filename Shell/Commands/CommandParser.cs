@@ -2,7 +2,7 @@
 using Spectre.Console;
 using System.Diagnostics;
 
-namespace NihilistShell.Shell;
+namespace NShell.Shell.Commands;
 
 /// <summary>
 /// <c>CommandParser</c> class handles loading and execution of shell commands.

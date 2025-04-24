@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using NihilistShell.Shell.Themes;
+using NShell.Shell.Themes;
 using Spectre.Console;
 
-namespace NihilistShell.Shell
+namespace NShell.Shell
 {
     public class ShellContext
     {
