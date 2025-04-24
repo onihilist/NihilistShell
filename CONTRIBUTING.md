@@ -33,8 +33,8 @@ Please adhere to the following guidelines when writing code:
 ## Code Reviews
 All pull requests will undergo code review by the maintainers. They may request changes or provide feedback. Please respond promptly to ensure the PR can be merged.
 
-Thank you for your contributions!
+Thank you for your contributions ! <3
 
 ---
 
-Happy coding, and thank you for contributing to NihilistShell!
+Happy coding, and thank you for contributing to NShell ! ヽ(・∀・)ﾉ

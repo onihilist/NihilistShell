@@ -1,6 +1,7 @@
 # Code of Conduct for NShell
 
-We are committed to making participation in the NShell project a harassment-free experience for everyone. We ask that you follow this code of conduct to ensure a respectful and welcoming environment for all participants.
+We are committed to making participation in the NShell project a harassment-free experience for everyone.
+We ask that you follow this code of conduct to ensure a respectful and welcoming environment for all participants.
 
 ## Our Pledge
 
@@ -43,4 +44,4 @@ This Code of Conduct applies within all project spaces, including but not limite
 
 ---
 
-Thank you for helping us keep NihilistShell a welcoming space for everyone.
+Thank you for helping us keep NShell a welcoming space for everyone. (b ᵔ▽ᵔ)b
