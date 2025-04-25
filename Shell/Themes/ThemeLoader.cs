@@ -73,7 +73,7 @@ namespace NShell.Shell.Themes
         /// <returns>Prompt string and LS_COLORS if theme found, error message otherwise.</returns>
         public static string[] LoadCustomTheme(string themeName, string currentDirectory)
         {
-            string themesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nihilist_shell", "themes");
+            string themesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nshell", "themes");
             
             if (!Directory.Exists(themesDirectory))
             {
