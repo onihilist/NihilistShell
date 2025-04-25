@@ -11,6 +11,7 @@ namespace NShell.Shell
     public class ShellContext
     {
         public string CurrentDirectory { get; set; }
+        public string CurrentTheme { get; set; } = "default";
         public string Prompt { get; private set; }
         public string LSColors { get; private set; }
 
@@ -98,10 +99,12 @@ namespace NShell.Shell
             
             if (ThemeLoader.TryGetTheme(themeName, out var themeEnum))
             {
+                CurrentTheme = themeName;
                 themeData = ThemeLoader.ToStringValue(themeEnum, CurrentDirectory);
             }
             else
             {
+                CurrentTheme = themeName;
                 themeData = ThemeLoader.LoadCustomTheme(themeName, CurrentDirectory);
             }
             

@@ -17,6 +17,7 @@ namespace NShell.Shell.Keyboard
             while (true)
             {
                 Environment.SetEnvironmentVariable("LS_COLORS", context.GetLsColors());
+                context.SetTheme(context.CurrentTheme);
                 AnsiConsole.Markup(context.GetPrompt());
                 inputBuffer = "";
                 history.ResetIndex();
