@@ -56,11 +56,28 @@ namespace NShell.Shell.Themes
                     },
                 DefaultThemesEnum.Light =>
                     new string[] {
-                        $"[white]\u250c[[{Environment.UserName}@{Environment.MachineName}]]\n\u2514[[{currentDirectory}]][/] >> ",
+                        $"[white]\u250c[[[/][silver]{Environment.UserName}[/][red]@[/][silver]{Environment.MachineName}[/][white]]]\n\u2514[[[/]{ColorizePathLight("red", "silver", currentDirectory)}[white]]][/] >> ",
                         "di=37:fi=30:ln=36:pi=33:so=35:ex=32"
                     },
                 _ => new string[] { "[[[yellow]*[/]]] - Unknown theme" }
             };
+        }
+        
+        /// <summary>
+        /// Colors each character in the path for the Light theme:
+        /// '/' is colored red, other characters are colored silver.
+        /// </summary>
+        private static string ColorizePathLight(string slashColor, string wordsColor,string path)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var c in path)
+            {
+                if (c == '/')
+                    sb.Append($"[{slashColor}]/[/]");
+                else
+                    sb.Append($"[{wordsColor}]{c}[/]");
+            }
+            return sb.ToString();
         }
 
         /// <summary>
@@ -101,22 +118,44 @@ namespace NShell.Shell.Themes
                     string? formatBottom = data["format_bottom"]?.ToString();
                     string? cornerTop = data["corner_top"]?.ToString();
                     string? cornerBottom = data["corner_bottom"]?.ToString();
+                    string? pathSlashColor = data["path_slash_color"]?.ToString();
+                    string? pathWordsColor = data["path_words_color"]?.ToString();
                     string? colors = data["ls_colors"]?.ToString() ?? "di=34:fi=37:ln=36:pi=33:so=35:ex=32";
 
                     if (cornerTop != null && cornerBottom != null && formatTop != null && formatBottom != null)
                     {
-                        string prompt = $"{cornerTop}{formatTop.Replace("{user}", Environment.UserName).Replace("{host}", Environment.MachineName)}\n" +
-                                        $"{cornerBottom}{formatBottom.Replace("{cwd}", currentDirectory)} >> ";
-                        return new[] { prompt, colors };
+                        if (pathSlashColor != null && pathWordsColor != null)
+                        {
+                            string prompt = $"{cornerTop}{formatTop.Replace("{user}", Environment.UserName).Replace("{host}", Environment.MachineName)}\n" +
+                                            $"{cornerBottom}{formatBottom.Replace("{cwd}", ColorizePathLight(pathSlashColor, pathWordsColor, currentDirectory))} >> ";
+                            return new[] { prompt, colors };
+                        }
+                        else
+                        {
+                            string prompt = $"{cornerTop}{formatTop.Replace("{user}", Environment.UserName).Replace("{host}", Environment.MachineName)}\n" +
+                                            $"{cornerBottom}{formatBottom.Replace("{cwd}", currentDirectory)} >> ";
+                            return new[] { prompt, colors }; 
+                        }
                     }
 
                     if (format != null)
                     {
-                        string prompt = format
-                            .Replace("{user}", Environment.UserName)
-                            .Replace("{host}", Environment.MachineName)
-                            .Replace("{cwd}", currentDirectory);
-                        return new[] { prompt, colors };
+                        if (pathSlashColor != null && pathWordsColor != null)
+                        {
+                            string prompt = format
+                                .Replace("{user}", Environment.UserName)
+                                .Replace("{host}", Environment.MachineName)
+                                .Replace("{cwd}", ColorizePathLight(pathSlashColor, pathWordsColor, currentDirectory));
+                            return new[] { prompt, colors };
+                        }
+                        else
+                        {
+                            string prompt = format
+                                .Replace("{user}", Environment.UserName)
+                                .Replace("{host}", Environment.MachineName)
+                                .Replace("{cwd}", currentDirectory);
+                            return new[] { prompt, colors };
+                        }
                     }
                 }
             }
