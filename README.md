@@ -47,16 +47,19 @@ chmod +x install.sh
 This is a little exemple of an custom theme.</br>
 If you are using `format_top/bottom` & `corner_top/bottom`, `format` will be ignored.</br>
 For making a single line prompt use `format`, and double line `format_top/bottom`.</br>
+N.B : `path_slash_color` & `path_words_color` works with single and double line shell prompt.
 Exemple :
 ```json
 {
   "name": "test",
   "format": "[bold green][[{user}@{host}]][/][white][[{cwd}]] >>[/]",
-  "format_top": "[bold cyan]{user}@{host}[/]",
-  "format_bottom": "[bold yellow]{cwd}[/]",
+  "format_top": "[[[bold cyan]{user}[/]@[bold cyan]{host}[/]]]",
+  "format_bottom": "[[{cwd}]]",
   "corner_top": "[bold magenta]\u250c[/]",
   "corner_bottom": "[bold magenta]\u2514[/]",
-  "ls_colors": "di=34:fi=37:ln=36:pi=33:so=35:ex=32"
+  "ls_colors": "di=34:fi=37:ln=36:pi=33:so=35:ex=32",
+  "path_slash_color": "cyan",
+  "path_words_color": "yellow"
 }
 ```
 
@@ -64,7 +67,7 @@ The name of the theme is `test`, no matter what the file is named.</br>
 So enter the command : `settheme test`.</br>
 This is the result :
 
-![Preview Test Theme](https://github.com/user-attachments/assets/21eb8e58-4e36-4d9e-b057-de107a4b2727)
+![Preview Test Theme](https://github.com/user-attachments/assets/eaea69b7-0f9e-4f0f-8d0b-7c92ffe8c4f1)
 
 ---
 
