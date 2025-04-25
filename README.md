@@ -3,14 +3,14 @@
 
 > A custom C# interactive shell, customizable.
 
-![NihilistShell Preview](https://github.com/user-attachments/assets/88d01dd0-cae6-4535-a85f-202e30b67a14)
+![NShell Preview](https://github.com/user-attachments/assets/1635d16b-c6b1-4379-8ee6-2a0d5c8161fb)
 
 
 ---
 
-### 🧠 What is NihilistShell?
+### 🧠 What is NShell?
 
-**NihilistShell** is a lightweight, extensible shell written in C# using [.NET 8.0+].  
+**NShell** is a lightweight, extensible shell written in C# using [.NET 8.0+].  
 It's designed for hackers, shell lovers, and those who enjoy boot sequences.
 
 ⚠️ This is an **alpha build** — many features are experimental, and some commands might fail gloriously.
@@ -34,8 +34,8 @@ It's designed for hackers, shell lovers, and those who enjoy boot sequences.
 Clone the repo and install:
 
 ```bash
-git clone https://github.com/your-username/NihilistShell.git
-cd NihilistShell
+git clone https://github.com/onihilist/NShell.git
+cd NShell
 chmod +x install.sh
 ./install.sh
 ```
@@ -64,7 +64,7 @@ The name of the theme is `test`, no matter what the file is named.</br>
 So enter the command : `settheme test`.</br>
 This is the result :
 
-![Preview Test Theme](https://github.com/user-attachments/assets/c54efcb9-c0a8-48e2-88c9-644c1bd7ccf5)
+![Preview Test Theme](https://github.com/user-attachments/assets/21eb8e58-4e36-4d9e-b057-de107a4b2727)
 
 ---
 
@@ -83,11 +83,11 @@ This is the result :
 
 ### 🔧 Troubleshooting
 
-If you have any problem with **NihilistShell**, or it locks you out of a proper shell,  
+If you have any problem with **NShell**, or it locks you out of a proper shell,  
 you can forcefully switch back to `bash` like this:
 
 ```bash
-sudo sed -i "s|/usr/local/bin/nihilistshell|/bin/bash|" /etc/passwd
+sudo sed -i "s|/usr/local/bin/nshell|/bin/bash|" /etc/passwd
 ```
 
 If you got the error "bad interpreter" when running `install.sh` try to run this :
