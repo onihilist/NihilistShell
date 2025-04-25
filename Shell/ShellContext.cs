@@ -56,7 +56,7 @@ namespace NShell.Shell
             
             string themeDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".nihilist_shell",
+                ".nshell",
                 "themes"
             );
 

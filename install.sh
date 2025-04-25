@@ -27,10 +27,10 @@ if ! command -v dotnet &> /dev/null; then
 fi
 
 USER_PROFILE=$(eval echo ~$USER)
-NIHILIST_SHELL_DIR="$USER_PROFILE/.nshell"
-HISTORY_FILE="$NIHILIST_SHELL_DIR/.nhistory"
-THEMES_DIR="$NIHILIST_SHELL_DIR/themes"
-PLUGINS_DIR="$NIHILIST_SHELL_DIR/plugins"
+N_SHELL_DIR="$USER_PROFILE/.nshell"
+HISTORY_FILE="$N_SHELL_DIR/.nhistory"
+THEMES_DIR="$N_SHELL_DIR/themes"
+PLUGINS_DIR="$N_SHELL_DIR/plugins"
 
 echo "[*] - Creating directories/files if they don't exist..."
 

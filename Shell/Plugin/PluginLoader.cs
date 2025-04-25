@@ -9,14 +9,14 @@ namespace NShell.Shell.Plugins
     /// </summary>
     public class PluginLoader
     {
-        private string   PluginFolderPath { get; set; } = $"/home/{Environment.UserName}/.nihilist_shell/plugins";
+        private string   PluginFolderPath { get; set; } = $"/home/{Environment.UserName}/.nshell/plugins";
         public  string[] PluginList { get; set; }
         public  int      NumberOfPlugins { get; set; }
         
         public static PluginLoader Instance { get; private set; } = null!;
 
         /// <summary>
-        /// Load all plugins into <c>~/.nihilist_shell/plugins</c> folder.
+        /// Load all plugins into <c>~/.nshell/plugins</c> folder.
         /// </summary>
         public void LoadPlugins()
         {

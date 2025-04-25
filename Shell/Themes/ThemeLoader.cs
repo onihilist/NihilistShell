@@ -81,7 +81,7 @@ namespace NShell.Shell.Themes
         }
 
         /// <summary>
-        /// Loads a custom theme from the <c>~/.nihilist_shell/themes/</c> directory, 
+        /// Loads a custom theme from the <c>~/.nshell/themes/</c> directory, 
         /// based on the name found in the theme's JSON file.
         /// If the directory doesn't exist, it will be created.
         /// </summary>
