@@ -2,9 +2,8 @@
 using Spectre.Console;
 using NShell.Shell;
 using NShell.Shell.Commands;
-using NShell.Shell.History;
-using NShell.Shell.Keyboard;
 using NShell.Shell.Plugins;
+using NShell.Shell.Readline;
 using static NShell.Animation.GlitchOutput;
 
 public class Program
@@ -37,7 +36,6 @@ public class Program
 
         AnsiConsole.Markup("[bold cyan][[*]] - Booting NShell...[/]\n");
         ShellContext context = new();
-        HistoryManager history = new();
         PluginLoader plugins = new();
         AnsiConsole.Markup("[bold cyan][[*]] - Loading command(s)...[/]\n");
         CommandParser parser = new();
@@ -45,13 +43,33 @@ public class Program
         plugins.LoadPlugins();
 
         AppDomain.CurrentDomain.ProcessExit += (_, _) => {
-            history.Save();
+            ReadLine.History.Save();
         };
 
         await GlitchedPrint("[+] - System Online", TimeSpan.FromMilliseconds(20));
-        Console.WriteLine();
+        string inputBuffer;
 
-        KeyboardHandler.Handler(history, context, parser);
-        
+        while (true)
+        {
+            Environment.SetEnvironmentVariable("LS_COLORS", context.GetLsColors());
+            context.SetTheme(context.CurrentTheme);
+            AnsiConsole.Markup(context.GetPrompt());
+            ReadLine.History.ResetIndex();
+            ReadLine.Handler.UpdateInitCursorPos(Console.CursorLeft);
+
+            inputBuffer = ReadLine.GetText();
+
+            if (string.IsNullOrWhiteSpace(inputBuffer)) continue;
+            ReadLine.History.Add(inputBuffer);
+
+            try
+            {
+                parser.TryExecute(inputBuffer, context);
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Shell crash: [yellow]{ex.Message}[/]");
+            }
+        }
     }
 }

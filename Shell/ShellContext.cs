@@ -122,7 +122,5 @@ namespace NShell.Shell
             }
             return true;
         }
-
-
     }
 }
