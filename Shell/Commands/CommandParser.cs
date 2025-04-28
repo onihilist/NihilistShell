@@ -101,7 +101,7 @@ public class CommandParser
         var cmdName = parts[0];
         var args = parts.Skip(1).ToArray();
         
-        if (cmdName.StartsWith("./") || cmdName.StartsWith("/") || cmdName.Contains("/"))
+        if (cmdName.StartsWith("./"))
         {
             try
             {
@@ -111,9 +111,9 @@ public class CommandParser
                     {
                         FileName = "/bin/bash",
                         Arguments = $"-c \"{commandLine}\"",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        RedirectStandardInput = true,
+                        RedirectStandardOutput = false,
+                        RedirectStandardError = false,
+                        RedirectStandardInput = false,
                         UseShellExecute = false,  
                         CreateNoWindow = true
                     }
@@ -138,7 +138,7 @@ public class CommandParser
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[[[red]-[/]]] - Error executing file: {ex.Message}");
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Error executing file: {ex.Message}");
                 return true;
             }
         }
