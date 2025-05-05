@@ -1,4 +1,3 @@
-
 using Spectre.Console;
 using System.Diagnostics;
 
@@ -10,7 +9,6 @@ namespace NShell.Shell.Commands;
 /// </summary>
 public class CommandParser
 {
-
     public static readonly Dictionary<string, ICustomCommand> CustomCommands = new();
     public static readonly HashSet<string> SystemCommands = new();
     private static readonly HashSet<string> InteractiveCommands = new()
@@ -37,19 +35,13 @@ public class CommandParser
             AnsiConsole.MarkupLine($"\t[[[green]+[/]]] - Loaded custom command: [yellow]{command.Name}[/]");
         }
 
-        var TotalCommands = CustomCommands.Count + SystemCommands.Count;
-
         LoadSystemCommands();
 
-        if (TotalCommands > 0)
-        {
-            AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [bold green]{TotalCommands}[/]");
-        }
-        else
-        {
-            AnsiConsole.MarkupLine($"[bold grey]→ Total commands loaded:[/] [yellow]{TotalCommands}[/]");
-        }
+        var total = CustomCommands.Count + SystemCommands.Count;
 
+        AnsiConsole.MarkupLine(total > 0
+            ? $"[bold grey]→ Total commands loaded:[/] [bold green]{total}[/]"
+            : $"[bold grey]→ Total commands loaded:[/] [yellow]{total}[/]");
     }
 
     /// <summary>
@@ -63,15 +55,13 @@ public class CommandParser
         {
             if (!Directory.Exists(dir)) continue;
 
-            var commands = Directory.GetFiles(dir)
-                                    .Select(Path.GetFileName)
-                                    .Where(f => !string.IsNullOrWhiteSpace(f));
-
-            foreach (var cmd in commands)
+            foreach (var file in Directory.GetFiles(dir))
             {
-                SystemCommands.Add(cmd);
-                var safeCmd = EscapeMarkup(cmd);
-                //AnsiConsole.MarkupLine($"\t[[[green]+[/]]] Loaded system command: [yellow]{safeCmd}[/]");
+                var cmd = Path.GetFileName(file);
+                if (!string.IsNullOrWhiteSpace(cmd))
+                {
+                    SystemCommands.Add(cmd);
+                }
             }
         }
     }
@@ -85,73 +75,32 @@ public class CommandParser
     /// <returns>Returns true if the command was successfully executed, false otherwise.</returns>
     public bool TryExecute(string commandLine, ShellContext context)
     {
-        string expanded = context.ExpandVariables(commandLine);
+        var expanded = context.ExpandVariables(commandLine);
         var parts = expanded.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0) return false;
 
-        bool usedSudo = false;
-        if (parts[0] == "sudo")
-        {
-            usedSudo = true;
-            parts = parts.Skip(1).ToArray();
-        }
+        var usedSudo = parts[0] == "sudo";
+        if (usedSudo) parts = parts.Skip(1).ToArray();
 
         if (parts.Length == 0) return false;
 
         var cmdName = parts[0];
         var args = parts.Skip(1).ToArray();
-        
+
         if (cmdName.StartsWith("./"))
         {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "/bin/bash",
-                        Arguments = $"-c \"{commandLine}\"",
-                        RedirectStandardOutput = false,
-                        RedirectStandardError = false,
-                        RedirectStandardInput = false,
-                        UseShellExecute = false,  
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-
-                if (!string.IsNullOrWhiteSpace(output))
-                    Console.WriteLine(output);
-
-                if (!string.IsNullOrWhiteSpace(error))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(error);
-                    Console.ResetColor();
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Error executing file: {ex.Message}");
-                return true;
-            }
+            return ExecuteLocalFile(commandLine);
         }
 
-        if (CustomCommands.TryGetValue(cmdName, out var command))
+        if (CustomCommands.TryGetValue(cmdName, out var customCmd))
         {
-            if (command is IMetadataCommand meta && meta.RequiresRoot && !(usedSudo || IsRootUser()))
+            if (customCmd is IMetadataCommand meta && meta.RequiresRoot && !(usedSudo || IsRootUser()))
             {
                 AnsiConsole.MarkupLine("[red][[-]] - This command requires root privileges. Prefix with [bold yellow]sudo[/] or run as root.[/]");
                 return true;
             }
 
-            command.Execute(context, args);
+            customCmd.Execute(context, args);
             return true;
         }
 
@@ -160,11 +109,13 @@ public class CommandParser
             var fullPath = ResolveSystemCommandPath(cmdName);
             if (fullPath != null)
             {
-                bool success = RunSystemCommand(fullPath, args, usedSudo);
+                RunSystemCommand(fullPath, args, usedSudo);
+
                 if ((cmdName == "apt" || cmdName == "apt-get") && args.Length > 0 && args[0] == "install")
                 {
                     CommandLoader.RefreshCommands();
                 }
+
                 return true;
             }
         }
@@ -174,44 +125,59 @@ public class CommandParser
     }
 
     /// <summary>
+    /// Executes a local shell file.
+    /// </summary>
+    private static bool ExecuteLocalFile(string commandLine)
+    {
+        try
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{commandLine}\"",
+                    UseShellExecute = false
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[[[red]-[/]]] - Error executing file: {ex.Message}");
+            return true;
+        }
+    }
+
+    /// <summary>
     /// Resolves the full path of a system command by searching in common system directories.
     /// </summary>
-    /// <param name="cmdName">The name of the system command.</param>
-    /// <returns>The full path to the command if found, otherwise null.</returns>
     private static string? ResolveSystemCommandPath(string cmdName)
     {
         var paths = new[] { "/usr/bin", "/usr/local/bin", "/usr/games", "/bin", "/sbin", "/usr/sbin" };
 
-        foreach (var path in paths)
-        {
-            var fullPath = Path.Combine(path, cmdName);
-            if (File.Exists(fullPath) && IsExecutable(fullPath))
-                return fullPath;
-        }
-
-        return null;
+        return paths.Select(path => Path.Combine(path, cmdName))
+                    .FirstOrDefault(fullPath => File.Exists(fullPath) && IsExecutable(fullPath));
     }
 
     /// <summary>
     /// Checks if a file is executable.
     /// </summary>
-    /// <param name="path">The path to the file.</param>
-    /// <returns>True if the file is executable, otherwise false.</returns>
     private static bool IsExecutable(string path)
     {
-        return (new FileInfo(path).Exists && (new FileInfo(path).Attributes & FileAttributes.Directory) == 0);
+        return new FileInfo(path).Exists;
     }
 
     /// <summary>
     /// Runs a system command, optionally using `sudo`, and handles interactive vs non-interactive command behavior.
     /// </summary>
-    /// <param name="path">The full path to the system command.</param>
-    /// <param name="args">Arguments to pass to the command.</param>
-    /// <param name="useSudo">Whether to use `sudo` to run the command.</param>
     private static bool RunSystemCommand(string path, string[] args, bool useSudo)
     {
-        bool isInteractive = InteractiveCommands.Contains(Path.GetFileName(path));
-
+        var isInteractive = InteractiveCommands.Contains(Path.GetFileName(path));
         var startInfo = new ProcessStartInfo
         {
             FileName = useSudo ? "/usr/bin/sudo" : path,
@@ -219,20 +185,18 @@ public class CommandParser
             UseShellExecute = isInteractive,
             RedirectStandardOutput = !isInteractive,
             RedirectStandardError = !isInteractive,
-            RedirectStandardInput = false,
             CreateNoWindow = false
         };
 
-        var process = new Process { StartInfo = startInfo };
+        using var process = new Process { StartInfo = startInfo };
 
         if (!isInteractive)
         {
-            process.OutputDataReceived += (s, e) =>
+            process.OutputDataReceived += (_, e) =>
             {
                 if (!string.IsNullOrWhiteSpace(e.Data)) Console.WriteLine(e.Data);
             };
-
-            process.ErrorDataReceived += (s, e) =>
+            process.ErrorDataReceived += (_, e) =>
             {
                 if (!string.IsNullOrWhiteSpace(e.Data))
                 {
@@ -252,27 +216,14 @@ public class CommandParser
         }
 
         process.WaitForExit();
-
         return process.ExitCode == 0;
     }
 
     /// <summary>
     /// Checks if the current user is root.
     /// </summary>
-    /// <returns>True if the current user is root, otherwise false.</returns>
     private static bool IsRootUser()
     {
         return Environment.UserName == "root" || Environment.GetEnvironmentVariable("USER") == "root";
     }
-
-    /// <summary>
-    /// Escapes markup characters in a string.
-    /// </summary>
-    /// <param name="input">The input string to escape.</param>
-    /// <returns>The escaped string.</returns>
-    private static string EscapeMarkup(string input)
-    {
-        return input.Replace("[", "[[").Replace("]", "]]");
-    }
 }
-
