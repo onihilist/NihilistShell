@@ -1,5 +1,6 @@
 ﻿
 using NShell.Shell;
+using NShell.Shell.Commands;
 using Spectre.Console;
 
 namespace NShell.Commands
