@@ -31,17 +31,20 @@ N_SHELL_DIR="$USER_PROFILE/.nshell"
 HISTORY_FILE="$N_SHELL_DIR/.nhistory"
 THEMES_DIR="$N_SHELL_DIR/themes"
 PLUGINS_DIR="$N_SHELL_DIR/plugins"
+CONFIG_FILE="$N_SHELL_DIR/nshell.conf.json"
 
 echo "[*] - Creating directories/files if they don't exist..."
 
 mkdir -p "$THEMES_DIR"
 mkdir -p "$PLUGINS_DIR"
 touch "$HISTORY_FILE"
+curl -L "https://gist.githubusercontent.com/onihilist/8bf7548dc7478f1b6af2db4bdc0c668d/raw/28f46aa5ebcb27b4f0edb302e2ff4347f49a2f83/nshell.conf.json" -o $CONFIG_FILE
 
 echo "[+] - Directories/Files created or already exist: "
 echo " - $THEMES_DIR"
 echo " - $PLUGINS_DIR"
 echo " - $HISTORY_FILE"
+echo " - $CONFIG_FILE"
 
 echo "[*] - Compiling NShell..."
 dotnet publish NShell.csproj \
