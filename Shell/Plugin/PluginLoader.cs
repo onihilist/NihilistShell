@@ -1,57 +1,97 @@
-
 using Spectre.Console;
+using System.Reflection;
+using NShell.Shell.Commands;
 
-namespace NShell.Shell.Plugins
+namespace NShell.Shell.Plugins;
+
+/// <summary>
+/// Manages loading and registration of plugins implementing <c>ICustomCommand</c>.
+/// </summary>
+public class PluginLoader
 {
+    private readonly string PluginFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nshell", "plugins");
+    private readonly List<Assembly> _loadedPlugins = new();
+
+    public string[] PluginList { get; private set; } = [];
+    public int NumberOfPlugins { get; private set; }
+
+    public static PluginLoader Instance { get; private set; } = new();
+
+    public void LoadPlugins()
+    {
+        if (!Directory.Exists(PluginFolderPath))
+        {
+            AnsiConsole.MarkupLine("\t[[[red]-[/]]] - Plugin directory doesn't exist.");
+            AnsiConsole.MarkupLine("\t[[[yellow]*[/]]] - Creating plugins directory.");
+            Directory.CreateDirectory(PluginFolderPath);
+        }
+
+        PluginList = Directory.GetFiles(PluginFolderPath, "*.dll", SearchOption.AllDirectories);
+
+        if (PluginList.Length > 0)
+        {
+            foreach (var pluginPath in PluginList)
+            {
+                try
+                {
+                    var context = new PluginLoadContext(pluginPath);
+                    var assembly = context.LoadFromAssemblyPath(pluginPath);
+
+                    _loadedPlugins.Add(assembly);
+                    AnsiConsole.MarkupLine($"\t[[[green]+[/]]] - Loading plugin: [yellow]{Path.GetFileName(pluginPath)}[/]");
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.MarkupLine($"\t[[[red]-[/]]] - Failed to load plugin: {Path.GetFileName(pluginPath)}");
+                    AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything | ExceptionFormats.ShowLinks);
+                }
+            }
+
+            NumberOfPlugins = _loadedPlugins.Count;
+            AnsiConsole.MarkupLine($"[bold grey]→ Total plugins loaded:[/] [bold green]{NumberOfPlugins}[/]");
+
+            LoadPluginCommands();
+        }
+        else
+        {
+            NumberOfPlugins = 0;
+            AnsiConsole.MarkupLine("\t[[[yellow]*[/]]] - No plugins found.");
+            AnsiConsole.MarkupLine($"[bold grey]→ Total plugins loaded:[/] [bold yellow]0[/]");
+        }
+    }
 
     /// <summary>
-    /// <c>PluginLoader</c> manage all about loading, parse, execute plugins.
+    /// Extracts and registers all valid types implementing <c>ICustomCommand</c>.
     /// </summary>
-    public class PluginLoader
+    private void LoadPluginCommands()
     {
-        private string   PluginFolderPath { get; set; } = $"/home/{Environment.UserName}/.nshell/plugins";
-        public  string[] PluginList { get; set; }
-        public  int      NumberOfPlugins { get; set; }
-        
-        public static PluginLoader Instance { get; private set; } = null!;
-
-        /// <summary>
-        /// Load all plugins into <c>~/.nshell/plugins</c> folder.
-        /// </summary>
-        public void LoadPlugins()
+        foreach (var plugin in _loadedPlugins)
         {
-            if (Path.Exists(PluginFolderPath))
+            try
             {
-                var PluginList = Directory.GetFiles(
-                    PluginFolderPath, 
-                    "*.dll",
-                    SearchOption.AllDirectories);
+                var commandTypes = plugin.GetTypes()
+                    .Where(t => typeof(ICustomCommand).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
-                if (PluginList.Length > 0)
+                foreach (var type in commandTypes)
                 {
-                    NumberOfPlugins = PluginList.Length;
-                    foreach (var plugin in PluginList)
+                    if (Activator.CreateInstance(type) is ICustomCommand command)
                     {
-                        AnsiConsole.MarkupLine($"\t[[[green]+[/]]] - Loading plugin : [yellow]{plugin}[/].");
+                        CommandRegistry.Register(command);
+                        AnsiConsole.MarkupLine($"[[[green]+[/]]] - Loaded plugin command: [yellow]{command.Name}[/]");
                     }
-                    AnsiConsole.MarkupLine($"[bold grey]→ Total plugins loaded:[/] [bold green]{NumberOfPlugins}[/]");
-                }
-                else
-                {
-                    NumberOfPlugins = 0;
-                    AnsiConsole.MarkupLine($"\t[[[yellow]*[/]]] - No plugins found.");
-                    AnsiConsole.MarkupLine($"[bold grey]→ Total plugins loaded:[/] [bold yellow]{NumberOfPlugins}[/]");
                 }
             }
-            else
+            catch (ReflectionTypeLoadException rtle)
             {
-                PluginList = [];
-                AnsiConsole.MarkupLine($"\t[[[red]-[/]]] - Plugin directory doesn't exist.");
-                AnsiConsole.MarkupLine($"\t[[[yellow]*[/]]] - Creating plugins directory.");
-                Directory.CreateDirectory(PluginFolderPath);
+                foreach (var loaderEx in rtle.LoaderExceptions)
+                {
+                    AnsiConsole.MarkupLine($"[[[red]-[/]]] - Error loading plugin type: [red]{loaderEx?.Message}[/]");
+                }
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[[[red]-[/]]] - Error processing plugin: [red]{ex.Message}[/]");
             }
         }
-        
     }
-    
 }

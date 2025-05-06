@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using NShell.Shell.Commands;
 using NShell.Shell.Themes;
 using Spectre.Console;
 
@@ -14,6 +15,7 @@ namespace NShell.Shell
         public string CurrentTheme { get; set; } = "default";
         public string Prompt { get; private set; }
         public string LSColors { get; private set; }
+        public Dictionary<string, ICustomCommand> CustomCommands => CommandParser.CustomCommands;
 
         public ShellContext()
         {

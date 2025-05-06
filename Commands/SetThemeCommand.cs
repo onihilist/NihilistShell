@@ -1,5 +1,6 @@
 ﻿
 using NShell.Shell;
+using NShell.Shell.Commands;
 using Spectre.Console;
 
 namespace NShell.Commands
@@ -20,7 +21,6 @@ namespace NShell.Commands
             }
 
             string themeName = args[0];
-            
             bool res = context.SetTheme(themeName);
 
             if(res){AnsiConsole.MarkupLine($"[[[green]+[/]]] - Theme set to: {themeName}");}

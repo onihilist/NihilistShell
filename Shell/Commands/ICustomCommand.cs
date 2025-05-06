@@ -1,5 +1,5 @@
 ﻿
-namespace NShell.Shell;
+namespace NShell.Shell.Commands;
 
 /// <summary>
 /// The <c>ICustomCommand</c> interface defines a contract for implementing
