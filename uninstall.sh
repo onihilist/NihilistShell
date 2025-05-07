@@ -10,11 +10,13 @@ chsh -s /bin/bash || {
     exit 1
 }
 
+USER_PROFILE=$(eval echo ~$USER)
+N_SHELL_DIR="$USER_PROFILE/.nshell"
 BIN_PATH="/usr/local/bin/nshell"
 
 if [ -f "$BIN_PATH" ]; then
-    echo "[*] - Removing $BIN_PATH..."
-    sudo rm "$BIN_PATH"
+    echo "[*] - Removing $BIN_PATH & related folders/files..."
+    sudo rm -rf "$BIN_PATH" "$N_SHELL_DIR"
 else
     echo "[-] - No executable found at $BIN_PATH"
 fi

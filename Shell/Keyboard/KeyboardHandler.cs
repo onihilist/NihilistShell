@@ -28,6 +28,11 @@ namespace NShell.Shell.Keyboard
 
                     if (key.Key == ConsoleKey.Enter)
                     {
+                        if (inputBuffer.Trim() != "")
+                        {
+                            history.Add(inputBuffer);
+                            history.Save();
+                        }
                         Console.WriteLine();
                         break;
                     }

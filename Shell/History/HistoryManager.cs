@@ -18,7 +18,7 @@ namespace NShell.Shell.History
 
         public HistoryManager(string? path = null)
         {
-            _historyPath = path ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nshell/.history");
+            _historyPath = path ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nshell/.nhistory");
             Load();
         }
 
